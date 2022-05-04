@@ -8,6 +8,7 @@ from pyrat_engine.types import Coordinates
 @dataclass
 class MazeConfig:
     """Describe the initialization strategy of a random maze"""
+
     # Maze Dimensions
     width: int = 21
     height: int = 15
@@ -29,10 +30,26 @@ class MazeConfig:
         return self.cheeses is None
 
     @staticmethod
-    def copy(width = width, height = height, wall_density = wall_density, symmetric = symmetric, is_connected = is_connected, mud_density = mud_density, mud_range = mud_range, cheeses = cheeses):
-        return MazeConfig(width = width, height = height, wall_density = wall_density, symmetric = symmetric, is_connected = is_connected, mud_density = mud_density, mud_range = mud_range, cheeses = cheeses)
-
-    
+    def copy(
+        width=width,
+        height=height,
+        wall_density=wall_density,
+        symmetric=symmetric,
+        is_connected=is_connected,
+        mud_density=mud_density,
+        mud_range=mud_range,
+        cheeses=cheeses,
+    ):
+        return MazeConfig(
+            width=width,
+            height=height,
+            wall_density=wall_density,
+            symmetric=symmetric,
+            is_connected=is_connected,
+            mud_density=mud_density,
+            mud_range=mud_range,
+            cheeses=cheeses,
+        )
 
 
 class InitPlayerPosition(Enum):
@@ -51,7 +68,8 @@ class PlayerConfig:
     # Player 1
 
     # This parameter is not considered if player_init_position is not InitPlayerPosition.CUSTOM
-    player1_pos: Optional[Coordinates] = None  # Give a tuple if you want to specify a custom position
+    # Give a tuple if you want to specify a custom position
+    player1_pos: Optional[Coordinates] = None
     # Initial score
     player1_score: int = 0
     # Initial mud
@@ -64,7 +82,8 @@ class PlayerConfig:
     # Player 2
 
     # This parameter is not considered if player_init_position is not InitPlayerPosition.CUSTOM
-    player2_pos: Optional[Coordinates] = None  # Give a tuple if you want to specify a custom position
+    # Give a tuple if you want to specify a custom position
+    player2_pos: Optional[Coordinates] = None
     # Initial score
     player2_score: int = 0
     # Initial mud
@@ -81,7 +100,8 @@ class PlayerConfig:
         return self.player_pos_init == InitPlayerPosition.ASYMMETRIC
 
     def are_player_pos_custom(self) -> bool:
-        return (self.player_pos_init == InitPlayerPosition.CUSTOM and
-                self.player1_pos is not None and
-                self.player2_pos is not None)
-
+        return (
+            self.player_pos_init == InitPlayerPosition.CUSTOM
+            and self.player1_pos is not None
+            and self.player2_pos is not None
+        )
