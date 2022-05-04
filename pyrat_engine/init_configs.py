@@ -28,8 +28,11 @@ class MazeConfig:
     def is_cheese_random(self) -> bool:
         return self.cheeses is None
 
-    def __init__(self):
-        pass
+    @staticmethod
+    def copy(width = width, height = height, wall_density = wall_density, symmetric = symmetric, is_connected = is_connected, mud_density = mud_density, mud_range = mud_range, cheeses = cheeses):
+        return MazeConfig(width = width, height = height, wall_density = wall_density, symmetric = symmetric, is_connected = is_connected, mud_density = mud_density, mud_range = mud_range, cheeses = cheeses)
+
+    
 
 
 class InitPlayerPosition(Enum):
