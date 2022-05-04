@@ -22,6 +22,15 @@ All implementations will provide a common interface :
 - `set_state(State)` : set the state of the game to a given.
 - `get_state()` : get the state of the current game.
 
+# Installation
+- Install the latest version : 
+ ```bash
+ python -m pip install git+https://github.com/mintiti/pyrat-engine.git
+  ```
+- dev dependencies : 
+```bash
+python -m pip install -e .[dev]
+```
 
 # Benchmarks 
 *Coming Soon* :tm:
