@@ -8,11 +8,14 @@ class RandomMazeStateGenerators:
     def _simple_random_cheese_state_generator(maze_config: MazeConfig):
         cheese_number = 15
         previous_cheeses_positions = set()
+
+        # Add the middle cheese and yield it
         previous_cheeses_positions.add(
             (maze_config.width // 2, maze_config.height // 2)
         )
         yield (maze_config.width // 2, maze_config.height // 2)
-        for i in range(0, cheese_number // 2):
+
+        for _ in range(0, cheese_number // 2):
             cheese_x = random.randint(0, maze_config.width)
             cheese_y = random.randint(0, maze_config.height)
             while (cheese_x, cheese_y) in previous_cheeses_positions:
