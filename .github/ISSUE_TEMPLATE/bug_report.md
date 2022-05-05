@@ -7,29 +7,47 @@ assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## Problem Summary
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
-
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
-
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Python version: [e.g. 3.10]
- - Jax release: [e.g 0.3.10] 
- - Graphics card (if applicable)
+## Description of the Current Behaviour
 
 
 
-**Additional context**
-Add any other context about the problem here.
+## Description of the Expected Behaviour
+
+
+## Steps to Reproduce
+
+Where possible provide a (link to a) reproducible test case that is the bare minimum necessary to generate
+the problem.
+
+1.
+2.
+3.
+
+
+## Additional Info
+
+
+**System information**
+
+The following commands may help in answering the questions below.
+- `python --version`
+- `pip freeze | grep -E "numpy|jax"`
+
+- Have you written custom code (as opposed to using a stock example script provided in RidL):
+- OS Platform (e.g., Linux Ubuntu 16.04, Windows 11/10/...):
+- Issue found when running on GPU or CPU or both:
+- Python version (including if using Anaconda):
+- Relevant package versions (typically Numpy, Jax):
+
+
+## Contributing
+If you would like to aid in resolving this issue, briefly describe your candidate solution.
+
+
+## Other info / logs
+Where possible include any logs or source code that would be helpful to diagnose the problem.
+
+
