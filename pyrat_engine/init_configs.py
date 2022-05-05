@@ -1,8 +1,15 @@
 from dataclasses import dataclass
-from enum import Enum
+from enum import Enum, IntEnum, unique
 from typing import Tuple, Optional, List
 
 from pyrat_engine.types import Coordinates
+
+
+@unique
+class CheeseMode(IntEnum):
+    SYMMETRICAL = 0  # Force symmetrical cheeses
+    ASYMMETRICAL = 1  # asymmetrical cheeses
+    LIST = 2  # cheeses from a list
 
 
 @dataclass
@@ -24,21 +31,23 @@ class MazeConfig:
 
     # Cheeses
     # provide a list of cheese coordinates if you want a custom list of cheeses
-    cheeses: Optional[List[Coordinates]] = None
+    nb_cheese: int = 41
+    cheese_mode: CheeseMode = CheeseMode.SYMMETRICAL
+    cheeses: Optional[List[Coordinates]] = None # This is ignored unless cheese_mode is CheeseMode.LIST
 
     def is_cheese_random(self) -> bool:
         return self.cheeses is None
 
     @staticmethod
     def copy(
-        width=width,
-        height=height,
-        wall_density=wall_density,
-        symmetric=symmetric,
-        is_connected=is_connected,
-        mud_density=mud_density,
-        mud_range=mud_range,
-        cheeses=cheeses,
+            width=width,
+            height=height,
+            wall_density=wall_density,
+            symmetric=symmetric,
+            is_connected=is_connected,
+            mud_density=mud_density,
+            mud_range=mud_range,
+            cheeses=cheeses,
     ):
         return MazeConfig(
             width=width,
@@ -101,7 +110,7 @@ class PlayerConfig:
 
     def are_player_pos_custom(self) -> bool:
         return (
-            self.player_pos_init == InitPlayerPosition.CUSTOM
-            and self.player1_pos is not None
-            and self.player2_pos is not None
+                self.player_pos_init == InitPlayerPosition.CUSTOM
+                and self.player1_pos is not None
+                and self.player2_pos is not None
         )
