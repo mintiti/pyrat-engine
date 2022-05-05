@@ -15,13 +15,12 @@ class Move(Enum):
 
 
 class PyratEngine(ABC):
-    """Interface definition for a PyratEngin"""
+    """Interface definition for a PyratEngine.
+    The engine is purely responsible for setting a (deterministic) state and running it"""
 
     @abstractmethod
     def initialize(
         self,
-        maze_config: MazeConfig = None,
-        player_config: PlayerConfig = None,
         pgn: PGN = None,
     ):
         """Reads the initialization configuration and PGN and initializes the board"""
@@ -60,7 +59,7 @@ class PyratEngine(ABC):
 
     @abstractmethod
     def unmove(self, p1_move: Move, p2_move: Move, cheeses: List[Coordinates] = None):
-        """Unmake the moves for each players, then put the cheeses back in.
+        """Unmake the moves for each player, then put the cheeses back in.
         Args:
             p1_move: the move to unmake for player 1
             p2_move: the move to unmake for player 2
