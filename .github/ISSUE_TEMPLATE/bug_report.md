@@ -49,5 +49,3 @@ If you would like to aid in resolving this issue, briefly describe your candidat
 
 ## Other info / logs
 Where possible include any logs or source code that would be helpful to diagnose the problem.
-
-

@@ -39,6 +39,3 @@ assignees: ''
 - [ ]
 
 ## Additional Notes
-
-
-
