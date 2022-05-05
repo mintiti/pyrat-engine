@@ -1,6 +1,7 @@
+from typing import List, Optional
+
 from dataclasses import dataclass
 from enum import Enum, IntEnum, unique
-from typing import Tuple, Optional, List
 
 from pyrat_engine.types import Coordinates
 
@@ -33,7 +34,9 @@ class MazeConfig:
     # provide a list of cheese coordinates if you want a custom list of cheeses
     nb_cheese: int = 41
     cheese_mode: CheeseMode = CheeseMode.SYMMETRICAL
-    cheeses: Optional[List[Coordinates]] = None  # This is ignored unless cheese_mode is CheeseMode.LIST
+    cheeses: Optional[
+        List[Coordinates]
+    ] = None  # This is ignored unless cheese_mode is CheeseMode.LIST
 
     def is_cheese_random(self) -> bool:
         return self.cheeses is None
@@ -88,7 +91,7 @@ class PlayerConfig:
 
     def are_player_pos_custom(self) -> bool:
         return (
-                self.player_pos_init == InitPlayerPosition.CUSTOM
-                and self.player1_pos is not None
-                and self.player2_pos is not None
+            self.player_pos_init == InitPlayerPosition.CUSTOM
+            and self.player1_pos is not None
+            and self.player2_pos is not None
         )

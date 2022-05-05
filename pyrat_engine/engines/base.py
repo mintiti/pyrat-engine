@@ -1,17 +1,8 @@
 from abc import ABC, abstractmethod
-from enum import Enum
-from typing import Tuple, List
+from typing import List, Tuple
 
-from pyrat_engine.init_configs import MazeConfig, PlayerConfig
 from pyrat_engine.pgn import PGN
-from pyrat_engine.types import Coordinates
-
-
-class Move(Enum):
-    UP = 0
-    LEFT = 1
-    DOWN = 2
-    RIGHT = 3
+from pyrat_engine.types import Coordinates, Move
 
 
 class PyratEngine(ABC):

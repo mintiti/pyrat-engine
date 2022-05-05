@@ -1,9 +1,7 @@
-import pytest
 import random
-from pyrat_engine.init_configs import MazeConfig
-from pyrat_engine.initializer.random_maze_state_generators import (
-    CheeseGenerator,
-)
+
+from pyrat_engine.initializer.configs import MazeConfig
+from pyrat_engine.initializer.random_state_generators import CheeseGenerator
 
 
 def test_generate_random_cheese_list():
@@ -26,8 +24,8 @@ def test_generate_random_cheese_list():
         (2, 15),
     ]
     assert (
-            CheeseGenerator.generate_simple_random_cheese_state(
+        CheeseGenerator.generate_simple_random_cheese_state(
             maze_config=MazeConfig()
         ).cheeses
-            == expected_list
+        == expected_list
     )
