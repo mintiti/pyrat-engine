@@ -33,32 +33,10 @@ class MazeConfig:
     # provide a list of cheese coordinates if you want a custom list of cheeses
     nb_cheese: int = 41
     cheese_mode: CheeseMode = CheeseMode.SYMMETRICAL
-    cheeses: Optional[List[Coordinates]] = None # This is ignored unless cheese_mode is CheeseMode.LIST
+    cheeses: Optional[List[Coordinates]] = None  # This is ignored unless cheese_mode is CheeseMode.LIST
 
     def is_cheese_random(self) -> bool:
         return self.cheeses is None
-
-    @staticmethod
-    def copy(
-            width=width,
-            height=height,
-            wall_density=wall_density,
-            symmetric=symmetric,
-            is_connected=is_connected,
-            mud_density=mud_density,
-            mud_range=mud_range,
-            cheeses=cheeses,
-    ):
-        return MazeConfig(
-            width=width,
-            height=height,
-            wall_density=wall_density,
-            symmetric=symmetric,
-            is_connected=is_connected,
-            mud_density=mud_density,
-            mud_range=mud_range,
-            cheeses=cheeses,
-        )
 
 
 class InitPlayerPosition(Enum):
