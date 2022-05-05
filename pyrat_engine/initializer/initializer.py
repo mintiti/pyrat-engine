@@ -3,7 +3,7 @@ from pyrat_engine.initializer.random_state_generators import (
     CheeseGenerator,
     PlayerPositionGenerator,
 )
-from pyrat_engine.pgn import PGN
+from pyrat_engine.pgn.base import PGN
 
 
 class Initializer:

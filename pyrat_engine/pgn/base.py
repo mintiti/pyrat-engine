@@ -68,6 +68,7 @@ class PGN:
         player1_moves_history=None,
         player2_moves_history=None,
     ) -> "PGN":
+
         # Handle defaults
         if original_cheese_list is None:
             original_cheese_list = []
