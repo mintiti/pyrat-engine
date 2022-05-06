@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 from pyrat_engine.engines.base import PyratEngine
 from pyrat_engine.initializer.configs import MazeConfig, PlayerConfig
@@ -41,8 +41,8 @@ class VanillaPyEngine(PyratEngine):
     def get_current_game_state(self) -> CurrentGameState:
         return self.current_game_state
 
-    def move(self, p1_move: Move, p2_move: Move):
-        return
+    def move(self, p1_move: Move, p2_move: Move) -> Tuple[float, float]:
+        return (0.0, 0.0)  # placeholder for now
 
     def unmove(self, p1_move: Move, p2_move: Move, cheeses: List[Coordinates] = None):
         return

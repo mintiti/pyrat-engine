@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Tuple
 
 from pyrat_engine.state.base import CurrentGameState
 from pyrat_engine.types import Coordinates, Move
@@ -11,7 +11,7 @@ class PyratEngine(ABC):
     it"""
 
     @abstractmethod
-    def initialize(self):
+    def initialize(self) -> None:
         """Reads the initialization configuration and initializes
         the board"""
 
@@ -35,7 +35,7 @@ class PyratEngine(ABC):
         """
 
     @abstractmethod
-    def move(self, p1_move: Move, p2_move: Move) -> Coordinates:
+    def move(self, p1_move: Move, p2_move: Move) -> Tuple[float, float]:
         """Make the player moves on the current board
         Args:
             p1_move: The move from player 1
@@ -46,7 +46,9 @@ class PyratEngine(ABC):
         """
 
     @abstractmethod
-    def unmove(self, p1_move: Move, p2_move: Move, cheeses: List[Coordinates] = None):
+    def unmove(
+        self, p1_move: Move, p2_move: Move, cheeses: List[Coordinates] = None
+    ) -> None:
         """Unmake the moves for each player, then put the cheeses back in.
         Args:
             p1_move: the move to unmake for player 1
