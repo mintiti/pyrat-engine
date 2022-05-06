@@ -32,14 +32,14 @@ jobs:
     steps:
     - name: Run isort
       uses: isort/isort-action@master
+    - name: Run black
+      uses: psf/black@stable
     - name: Run flake8 Lint
       uses: py-actions/flake8@v2
       with:
         ignore: "E266 E501 E731 W503 D107"
         max-line-length: "100"
         args: "--max-complexity=10"
-    - name : Run black
-      uses: psf/black@stable
   test:
     runs-on: ubuntu-latest
     steps:
