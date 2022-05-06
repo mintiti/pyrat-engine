@@ -57,7 +57,8 @@ class PlayerConfig:
 
     # Player 1
 
-    # This parameter is not considered if player_init_position is not InitPlayerPosition.CUSTOM
+    # This parameter is not considered if player_init_position is not
+    # InitPlayerPosition.CUSTOM
     # Give a tuple if you want to specify a custom position
     player1_pos: Optional[Coordinates] = None
     # Initial score
@@ -71,7 +72,8 @@ class PlayerConfig:
 
     # Player 2
 
-    # This parameter is not considered if player_init_position is not InitPlayerPosition.CUSTOM
+    # This parameter is not considered if player_init_position is not
+    # InitPlayerPosition.CUSTOM
     # Give a tuple if you want to specify a custom position
     player2_pos: Optional[Coordinates] = None
     # Initial score
