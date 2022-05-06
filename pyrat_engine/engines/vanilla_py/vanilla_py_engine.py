@@ -52,7 +52,6 @@ class VanillaPyEngineBuilder:
     def __init__(self):
         self.player_config = None
         self.maze_config = None
-        self.cheese_state = None
 
     def with_player_config(self, player_config: PlayerConfig):
         self.player_config = player_config
