@@ -32,12 +32,14 @@ jobs:
     steps:
     - name: Run isort
       uses: isort/isort-action@master
-    - name: flake8 Lint
+    - name: Run flake8 Lint
       uses: py-actions/flake8@v2
       with:
-        ignore: "E266 E501 E731 W503"
+        ignore: "E266 E501 E731 W503 D107"
         max-line-length: "100"
-        max-cognitive-complexity: "10"
+        args: "--max-complexity=10"
+    - name : Run black
+      uses: psf/black@stable
   test:
     runs-on: ubuntu-latest
     steps:
