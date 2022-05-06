@@ -27,14 +27,22 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -e .[dev]
-    - name: Analysing the code with pylint
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        pylint $(git ls-files '*.py')
-    - name: Test with pytest
-      run: |
-        pytest
+  lint:
+    runs-on: ubuntu-latest
+    steps:
     - name: Run isort
       uses: isort/isort-action@master
       with:
-          requirementsFiles: "requirements/requirements.txt requirements/requirements-dev.txt"
+        requirementsFiles: "requirements/requirements.txt requirements/requirements-dev.txt"
+    - name: flake8 Lint
+      uses: py-actions/flake8@v2
+      with:
+        ignore: "E266 E501 E731 W503"
+        max-line-length: "100"
+        max-cognitive-complexity: "10"
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run pytest
+        run: |
+          pytest
