@@ -10,3 +10,4 @@ class Move(Enum):
     LEFT = 1
     DOWN = 2
     RIGHT = 3
+    DID_NOT_MOVE = 4
