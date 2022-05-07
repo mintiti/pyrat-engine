@@ -1,6 +1,5 @@
-from typing import List, Optional
+from typing import List, Mapping, Optional
 
-from collections.abc import Mapping
 from dataclasses import dataclass
 from enum import Enum, IntEnum, unique
 
