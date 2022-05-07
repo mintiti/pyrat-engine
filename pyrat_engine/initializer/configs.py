@@ -1,5 +1,6 @@
 from typing import List, Optional
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 from enum import Enum, IntEnum, unique
 
@@ -13,6 +14,18 @@ class CheeseMode(IntEnum):
     LIST = 2  # cheeses from a list
 
 
+@unique
+class WallMode(IntEnum):
+    RANDOM = 0
+    CUSTOM = 1
+
+
+@unique
+class MudMode(IntEnum):
+    RANDOM = 0
+    CUSTOM = 1
+
+
 @dataclass
 class MazeConfig:
     """Describe the initialization strategy of a random maze"""
@@ -22,13 +35,19 @@ class MazeConfig:
     height: int = 15
 
     # Walls
+    wall_mode: WallMode = WallMode.RANDOM
     wall_density: float = 0.7
     symmetric: bool = True
     is_connected: bool = True
+    # The following is ignored unless wall_mode is WallMode.CUSTOM
+    walls: Optional[Mapping[Coordinates, Coordinates]] = None
 
     # Mud
+    mud_mode: MudMode = MudMode.RANDOM
     mud_density: float = 0.1
     mud_range: int = 10
+    # The following is ignored unless mud_mode is MudMode.CUSTOM
+    mud: Optional[Mapping[Coordinates, Mapping[Coordinates, int]]] = None
 
     # Cheeses
     # provide a list of cheese coordinates if you want a custom list of cheeses
@@ -39,13 +58,19 @@ class MazeConfig:
     ] = None  # This is ignored unless cheese_mode is CheeseMode.LIST
 
     def is_cheese_random(self) -> bool:
-        return self.cheeses is None
+        return self.cheese_mode != CheeseMode.LIST
+
+    def is_wall_random(self) -> bool:
+        return self.wall_mode == WallMode.RANDOM
+
+    def is_mud_random(self) -> bool:
+        return self.mud_mode == MudMode.RANDOM
 
 
 class InitPlayerPosition(Enum):
     CORNER = 1  # Player positions are in the lower left and upper right corners
     SYMMETRIC = 2  # Player positions are random but symmetric
-    ASYMMETRIC = 3  # Player positions are random (possibly assymetric)
+    ASYMMETRIC = 3  # Player positions are random (possibly asymmetric)
     CUSTOM = 4  # Custom player positions.
 
 
