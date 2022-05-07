@@ -14,16 +14,15 @@ class VanillaPyEngine(PyratEngine):
         self,
         game_state: CurrentGameState,
     ):
-        self.initial_state: CurrentGameState = game_state
-        self.current_game_state: CurrentGameState = game_state
+        self.initial_state: CurrentGameState = deepcopy(game_state)
+        self.current_game_state: CurrentGameState = deepcopy(game_state)
 
     def reset(self) -> None:
         """Reset the PGN to the initial state with the config provided."""
         self.set_current_game_state(self.initial_state)
 
     def set_current_game_state(self, current_game_state: CurrentGameState) -> None:
-        """"""
-        self.current_game_state = current_game_state
+        self.current_game_state = deepcopy(current_game_state)
 
     def get_current_game_state(self) -> CurrentGameState:
         return deepcopy(self.current_game_state)
