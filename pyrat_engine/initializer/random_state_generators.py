@@ -35,9 +35,11 @@ class CheeseGenerator:
             cheese_list = list(self.asymmetric_cheeses_generator(maze_config))
 
         elif maze_config.cheese_mode == CheeseMode.LIST:
-            assert (
-                maze_config.cheeses
-            ), "Maze configuration cheese_mode is CheeseMode.LIST, but no cheeses were provided."
+            message: str = (
+                "Maze configuration cheese_mode is CheeseMode.LIST, but no"
+                + "cheeses were provided."
+            )
+            assert maze_config.cheeses, message
             cheese_list = maze_config.cheeses
 
         assert self.p1_pos not in cheese_list

@@ -11,7 +11,6 @@ exclude =
     *.egg-info,
     .cache,
     .eggs
-max-line-length=100
 import-order-style = google
 application-import-names = pyrat-engine
 doctests = True
@@ -22,3 +21,6 @@ ignore =
     D107  # Do not require docstrings for __init__
     W503  # line break before binary operator (not compatible with black)
     E731  # do not assign a lambda expression, use a def
+
+max-line-length = 88
+extend-ignore = E203

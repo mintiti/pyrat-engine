@@ -1,7 +1,9 @@
 from pyrat_engine.types import Coordinates
 
 
-def central_symmetrical(coordinate: Coordinates, maze_width, maze_height) -> Coordinates:
+def central_symmetrical(
+    coordinate: Coordinates, maze_width, maze_height
+) -> Coordinates:
     """Return the centrally symmetrical position of the coordinate in the maze
     Args:
         coordinate: the coordinates you want the central symmetry of
