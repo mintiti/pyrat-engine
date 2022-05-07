@@ -21,15 +21,14 @@ class CurrentStateInitializer:
         p1_pos, p2_pos = PlayerPositionGenerator(
             maze_width=self.maze_config.width, maze_height=self.maze_config.height
         ).from_config(self.player_config)
+
         cheese_list = CheeseGenerator(p1_pos=p1_pos, p2_pos=p2_pos).from_maze_config(
             self.maze_config
         )
         # todo : init walls
         # todo : init mud
-        return CurrentGameState.from_defaults(
-            maze_config=self.maze_config,
-            player_config=self.player_config,
-            current_cheese_list=cheese_list,
+        return CurrentGameState(
+            player1_pos=p1_pos, player2_pos=p2_pos, current_cheese_list=cheese_list
         )
 
 
@@ -53,8 +52,9 @@ class HistoricStateInitializer:
         )
         # todo : init walls
         # todo : init mud
-        return HistoricGameState.from_defaults(
-            maze_config=self.maze_config,
-            player_config=self.player_config,
-            current_cheese_list=cheese_list,
+        return HistoricGameState(
+            current_game_state=CurrentGameState(
+                player1_pos=p1_pos, player2_pos=p2_pos, current_cheese_list=cheese_list
+            ),
+            original_cheese_list=cheese_list,
         )

@@ -1,6 +1,6 @@
-from typing import Dict, List, Mapping
+from typing import List, Mapping
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from pyrat_engine.types import Coordinates, Move
 
@@ -11,78 +11,35 @@ class CurrentGameState:
     time"""
 
     # Current state
-    maze_width: int
-    maze_height: int
+    maze_width: int = 21
+    maze_height: int = 15
 
     # Cheeses
-    current_cheese_list: List[Coordinates]
+    current_cheese_list: List[Coordinates] = field(default_factory=list)
 
     # Walls
-    walls: Mapping[Coordinates, Coordinates]
+    walls: Mapping[Coordinates, Coordinates] = field(default_factory=dict)
 
     # Mud
-    mud: Mapping[Coordinates, Mapping[Coordinates, int]]
+    mud: Mapping[Coordinates, Mapping[Coordinates, int]] = field(default_factory=dict)
 
     # Player 1
-    player1_pos: Coordinates
+    player1_pos: Coordinates = (0, 0)
     # Current score
-    player1_score: int
+    player1_score: int = 0
     # Current mud
-    player1_mud: int
+    player1_mud: int = 0
     # Current number of misses
-    player1_misses: int
+    player1_misses: int = 0
 
     # Player 2
-    player2_pos: Coordinates
+    player2_pos: Coordinates = (maze_width, maze_height)
     # Current score
-    player2_score: int
+    player2_score: int = 0
     # Current mud
-    player2_mud: int
+    player2_mud: int = 0
     # Current number of misses
-    player2_misses: int
-
-    @staticmethod
-    def from_defaults(
-        maze_config,
-        player_config,
-        current_cheese_list,
-    ) -> "CurrentGameState":
-
-        current_cheese_list = [] if current_cheese_list is None else current_cheese_list
-
-        walls: Dict[Coordinates, Coordinates] = (
-            {} if maze_config.walls is None else maze_config.walls
-        )
-
-        mud: Dict[Coordinates, Dict[Coordinates, int]] = (
-            {} if maze_config.mud is None else maze_config.mud
-        )
-
-        player1_pos = (
-            (0, 0) if player_config.player1_pos is None else player_config.player1_pos
-        )
-
-        player2_pos = (
-            (maze_config.maze_width - 1, maze_config.maze_height - 1)
-            if player_config.player2_pos is None
-            else player_config.player2_pos
-        )
-
-        return CurrentGameState(
-            maze_width=maze_config.maze_width,
-            maze_height=maze_config.maze_height,
-            current_cheese_list=current_cheese_list,
-            walls=walls,
-            mud=mud,
-            player1_pos=player1_pos,
-            player1_score=player_config.player1_score,
-            player1_mud=player_config.player1_mud,
-            player1_misses=player_config.player1_misses,
-            player2_pos=player2_pos,
-            player2_score=player_config.player2_score,
-            player2_mud=player_config.player2_mud,
-            player2_misses=player_config.player2_misses,
-        )
+    player2_misses: int = 0
 
 
 @dataclass
@@ -90,59 +47,10 @@ class HistoricGameState:
     """Contains all the information needed to retrace the history of a game up to a
     certain point in time"""
 
-    current_game_state: CurrentGameState
+    current_game_state: CurrentGameState = CurrentGameState()
 
-    original_cheese_list: List[Coordinates]
+    original_cheese_list: List[Coordinates] = field(default_factory=list)
 
     # Action History
-    player1_moves_history: List[Move]
-    player2_moves_history: List[Move]
-
-    @staticmethod
-    def from_defaults(
-        maze_config,
-        player_config,
-        current_cheese_list,
-    ) -> "HistoricGameState":
-        """Initializes the historic state from the start of the history"""
-
-        current_cheese_list = [] if current_cheese_list is None else current_cheese_list
-
-        walls: Dict[Coordinates, Coordinates] = (
-            {} if maze_config.walls is None else maze_config.walls
-        )
-
-        mud: Dict[Coordinates, Dict[Coordinates, int]] = (
-            {} if maze_config.mud is None else maze_config.mud
-        )
-
-        player1_pos = (
-            (0, 0) if player_config.player1_pos is None else player_config.player1_pos
-        )
-
-        player2_pos = (
-            (maze_config.maze_width - 1, maze_config.maze_height - 1)
-            if player_config.player2_pos is None
-            else player_config.player2_pos
-        )
-
-        return HistoricGameState(
-            current_game_state=CurrentGameState(
-                maze_width=maze_config.maze_width,
-                maze_height=maze_config.maze_height,
-                current_cheese_list=current_cheese_list,
-                walls=walls,
-                mud=mud,
-                player1_pos=player1_pos,
-                player1_score=player_config.player1_score,
-                player1_mud=player_config.player1_mud,
-                player1_misses=player_config.player1_misses,
-                player2_pos=player2_pos,
-                player2_score=player_config.player2_score,
-                player2_mud=player_config.player2_mud,
-                player2_misses=player_config.player2_misses,
-            ),
-            original_cheese_list=current_cheese_list,
-            player1_moves_history=[],
-            player2_moves_history=[],
-        )
+    player1_moves_history: List[Move] = field(default_factory=list)
+    player2_moves_history: List[Move] = field(default_factory=list)
