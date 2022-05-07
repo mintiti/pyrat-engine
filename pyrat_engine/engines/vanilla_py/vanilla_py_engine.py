@@ -1,5 +1,7 @@
 from typing import List, Optional, Tuple
 
+from copy import deepcopy
+
 from pyrat_engine.engines.base import PyratEngine
 from pyrat_engine.initializer.configs import MazeConfig, PlayerConfig
 from pyrat_engine.initializer.initializer import CurrentStateInitializer
@@ -24,7 +26,7 @@ class VanillaPyEngine(PyratEngine):
         self.current_game_state = current_game_state
 
     def get_current_game_state(self) -> CurrentGameState:
-        return self.current_game_state
+        return deepcopy(self.current_game_state)
 
     def move(self, p1_move: Move, p2_move: Move) -> Tuple[float, float]:
         return (0.0, 0.0)  # placeholder for now

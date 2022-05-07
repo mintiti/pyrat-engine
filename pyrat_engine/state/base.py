@@ -50,7 +50,9 @@ class CurrentGameState:
 
         current_cheese_list = [] if current_cheese_list is None else current_cheese_list
 
-        walls: Dict[Coordinates, Coordinates] = {} if maze_config.walls is None else {}
+        walls: Dict[Coordinates, Coordinates] = (
+            {} if maze_config.walls is None else maze_config.walls
+        )
 
         mud: Dict[Coordinates, Dict[Coordinates, int]] = (
             {} if maze_config.mud is None else maze_config.mud
@@ -106,7 +108,9 @@ class HistoricGameState:
 
         current_cheese_list = [] if current_cheese_list is None else current_cheese_list
 
-        walls: Dict[Coordinates, Coordinates] = {} if maze_config.walls is None else {}
+        walls: Dict[Coordinates, Coordinates] = (
+            {} if maze_config.walls is None else maze_config.walls
+        )
 
         mud: Dict[Coordinates, Dict[Coordinates, int]] = (
             {} if maze_config.mud is None else maze_config.mud
