@@ -11,11 +11,6 @@ class PyratEngine(ABC):
     it"""
 
     @abstractmethod
-    def initialize(self) -> None:
-        """Reads the initialization configuration and initializes
-        the board"""
-
-    @abstractmethod
     def reset(self) -> None:
         """Reset the game according to the initialization parameters"""
 
