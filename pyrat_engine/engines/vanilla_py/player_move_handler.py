@@ -1,12 +1,19 @@
 from pyrat_engine.state.base import CurrentGameState
 from pyrat_engine.types import Coordinates, Move
+<<<<<<< HEAD
 from pyrat_engine.utils import down, left, right, up
+=======
+>>>>>>> Add move handler
 
 
 def move(
     current_game_state: CurrentGameState, p1_move: Move, p2_move: Move
 ) -> CurrentGameState:
 
+<<<<<<< HEAD
+=======
+    # Update the mud status
+>>>>>>> Add move handler
     current_game_state.player1_mud -= 1
     current_game_state.player2_mud -= 1
 
@@ -26,6 +33,7 @@ def move(
         move=p2_move,
     )
 
+<<<<<<< HEAD
     _update_misses(
         current_game_state=current_game_state,
         player1_destination=player1_destination,
@@ -98,12 +106,37 @@ def _update_misses(
     player1_destination: Coordinates,
     player2_destination: Coordinates,
 ):
+=======
+>>>>>>> Add move handler
     # Update the misses status
     if current_game_state.player1_pos == player1_destination:
         current_game_state.player1_misses += 1
     if current_game_state.player2_pos == player2_destination:
         current_game_state.player2_misses += 1
+<<<<<<< HEAD
     return
+=======
+
+    # TODO: Compute which cheeses have been taken
+    # TODO: Compute the updated score
+
+    return current_game_state
+    # cell1 = cell_of_decision(player1_location, decision1)
+    # cell2 = cell_of_decision(player2_location, decision2)
+    # if cell1 in maze[player1_location]:
+    #     stuck1 = maze[player1_location][cell1]
+    #     player1_location = cell1
+    #     moves1 = moves1 + 1
+    # elif stuck1 <= 0:
+    #     miss1 = miss1 + 1
+    # if cell2 in maze[player2_location]:
+    #     stuck2 = maze[player2_location][cell2]
+    #     player2_location = cell2
+    #     moves2 = moves2 + 1
+    # elif stuck2 <= 0:
+    #     miss2 = miss2 + 1
+    # return player1_location, player2_location, stuck1, stuck2, moves1, moves2, miss1, miss2
+>>>>>>> Add move handler
 
 
 def _compute_destination_cell(
@@ -132,6 +165,7 @@ def _get_desired_destination_position(
     player_position: Coordinates, move: Move
 ) -> Coordinates:
     x, y = player_position
+<<<<<<< HEAD
     if move == Move.UP:
         return up(player_position)
     elif move == Move.LEFT:
@@ -141,6 +175,18 @@ def _get_desired_destination_position(
     elif move == Move.RIGHT:
         return right(player_position)
     return x, y
+=======
+    destination_cell = (x, y)
+    if move == Move.UP:
+        destination_cell = (x, y + 1)
+    elif move == Move.LEFT:
+        destination_cell = (x - 1, y)
+    elif move == Move.DOWN:
+        destination_cell = (x, y - 1)
+    elif move == Move.RIGHT:
+        destination_cell = (x + 1, y)
+    return destination_cell
+>>>>>>> Add move handler
 
 
 def _is_move_possible(
