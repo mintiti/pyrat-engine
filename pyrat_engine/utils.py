@@ -14,3 +14,31 @@ def central_symmetrical(
         The symmetrical coordinates.
     """
     return (maze_width - coordinate[0] - 1, maze_height - coordinate[1] - 1)
+
+
+def up(coordinate: Coordinates) -> Coordinates:
+    """
+    Return the coordinate directly up of the given coordinate
+    """
+    return coordinate[0], coordinate[1] + 1
+
+
+def down(coordinate: Coordinates) -> Coordinates:
+    """
+    Return the coordinate directly down of the given coordinate
+    """
+    return coordinate[0], coordinate[1] - 1
+
+
+def left(coordinate: Coordinates) -> Coordinates:
+    """
+    Return the coordinate directly left of the given coordinate
+    """
+    return coordinate[0] - 1, coordinate[1]
+
+
+def right(coordinate: Coordinates) -> Coordinates:
+    """
+    Return the coordinate directly right the given coordinate
+    """
+    return coordinate[0] + 1, coordinate[1]
