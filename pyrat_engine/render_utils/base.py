@@ -16,16 +16,15 @@ class Renderer(ABC):
         pass
 
     @abstractmethod
-    def render(self, state: CurrentGameState) -> None:
+    def render(self, state: CurrentGameState) -> Any:
         """Processes the CurrentGameState and prints it"""
         pass
 
-    @abstractmethod
     def __enter__(self) -> Any:
         """Allows this printer to be used as a context manager"""
-        pass
+        self.initialize()
+        return self
 
-    @abstractmethod
     def __exit__(self, exc_type, exc_val, exc_tb) -> Any:
         """Exit the context manager"""
-        pass
+        self.close()
