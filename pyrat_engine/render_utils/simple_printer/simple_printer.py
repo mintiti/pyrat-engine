@@ -7,7 +7,7 @@ from pyrat_engine.types import Coordinates, Move
 from pyrat_engine.utils import down, left, right, up
 
 
-class CurrentGameStateParser:
+class CurrentGameStateReader:
     def __init__(self, current_game_state: CurrentGameState):
         self.current_game_state = current_game_state
         self._init_matrix()
@@ -111,7 +111,7 @@ class SimplePrinter(Renderer):
         pass
 
     def render(self, state: CurrentGameState) -> str:
-        parser = CurrentGameStateParser(state)
+        parser = CurrentGameStateReader(state)
         maze = self.make_maze(parser, state)
         p1_string = assets.PLAYER_SCORE_TEMPLATE.format(
             number=1,
