@@ -1,7 +1,7 @@
 import pytest
 
 from pyrat_engine.render_utils.simple_printer.simple_printer import (
-    CurrentGameStateParser,
+    CurrentGameStateReader,
     SimplePrinter,
 )
 from pyrat_engine.state.base import CurrentGameState
@@ -43,8 +43,9 @@ def printer() -> SimplePrinter:
 
 
 def test_maze_string_normal(maze_2_2: CurrentGameState, printer: SimplePrinter):
-    parser = CurrentGameStateParser(maze_2_2)
+    parser = CurrentGameStateReader(maze_2_2)
     ret = printer.make_maze(parser, maze_2_2)
+    print(ret)
     assert (
         ret
         == """
@@ -58,8 +59,9 @@ def test_maze_string_normal(maze_2_2: CurrentGameState, printer: SimplePrinter):
 
 
 def test_maze_string_mud(maze_2_2_mud: CurrentGameState, printer: SimplePrinter):
-    parser = CurrentGameStateParser(maze_2_2_mud)
+    parser = CurrentGameStateReader(maze_2_2_mud)
     ret = printer.make_maze(parser, maze_2_2_mud)
+    print(ret)
     assert (
         ret
         == """
