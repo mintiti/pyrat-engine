@@ -67,27 +67,38 @@ class CurrentGameStateParser:
                 left_intersection = self._get_intersection(coordinate, Move.LEFT)
                 self.intersections[coordinate][left(coordinate)] = left_intersection
 
-        def _intersection_between_coordinate_and_other(coordinate: Coordinates, other: Coordinate, is_horizontal: bool) -> str:
-            # Theres a wall between the two cells
-            if coordinate in walls and other in walls[coordinate]:
-                return assets.HORIZONTAL_WALL if is_horizontal else assets.VERTICAL_WALL
-            # Theres mud between the two cells
-            if coordinate in mud and other in mud[coordinate]:
-                return assets.HORIZONTAL_MUD if is_horizontal else assets.VERTICAL_MUD
-            return assets.EMPTY
-        
-        def _get_intersection(
-            self, coordinate: Coordinates, direction: Move
-        ):
-            if direction == Move.UP:
-                return _intersection_between_coordinate_and_other(coordinate, up(coordinate), is_horizontal=True)
-            elif direction == Move.DOWN:
-                return _intersection_between_coordinate_and_other(coordinate, down(coordinate), is_horizontal=True)
-            elif direction == Move.LEFT:
-                return _intersection_between_coordinate_and_other(coordinate, left(coordinate), is_horizontal=False)
-            elif direction == Move.RIGHT:
-                return_intersection_between_coordinate_and_other(coordinate, right(coordinate), is_horizontal=False)
-           return assets.EMTPY
+    def _intersection_between_coordinate_and_other(
+        self, coordinate: Coordinates, other: Coordinates, is_horizontal: bool
+    ) -> str:
+        # There's a wall between the two cells
+        walls = self.current_game_state.walls
+        mud = self.current_game_state.mud
+        if coordinate in walls and other in walls[coordinate]:
+            return assets.HORIZONTAL_WALL if is_horizontal else assets.VERTICAL_WALL
+        # There's mud between the two cells
+        if coordinate in mud and other in mud[coordinate]:
+            return assets.HORIZONTAL_MUD if is_horizontal else assets.VERTICAL_MUD
+        return assets.EMPTY if is_horizontal else assets.VERTICAL_NOTHING
+
+    def _get_intersection(self, coordinate: Coordinates, direction: Move):
+        """Return the asset to represent the intersection between coordinate and the cell in direction"""
+        if direction == Move.UP:
+            return self._intersection_between_coordinate_and_other(
+                coordinate, up(coordinate), is_horizontal=True
+            )
+        elif direction == Move.DOWN:
+            return self._intersection_between_coordinate_and_other(
+                coordinate, down(coordinate), is_horizontal=True
+            )
+        elif direction == Move.LEFT:
+            return self._intersection_between_coordinate_and_other(
+                coordinate, left(coordinate), is_horizontal=False
+            )
+        elif direction == Move.RIGHT:
+            return self._intersection_between_coordinate_and_other(
+                coordinate, right(coordinate), is_horizontal=False
+            )
+        return assets.EMPTY
 
 
 class SimplePrinter(Renderer):
