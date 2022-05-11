@@ -18,7 +18,7 @@ class CurrentGameState:
     current_cheese_list: List[Coordinates] = field(default_factory=list)
 
     # Walls
-    walls: Mapping[Coordinates, Coordinates] = field(default_factory=dict)
+    walls: Mapping[Coordinates, List[Coordinates]] = field(default_factory=dict)
 
     # Mud
     mud: Mapping[Coordinates, Mapping[Coordinates, int]] = field(default_factory=dict)
