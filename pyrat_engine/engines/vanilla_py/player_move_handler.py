@@ -11,9 +11,14 @@ def move(
 ) -> CurrentGameState:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     # Update the mud status
 >>>>>>> Add move handler
+=======
+    # Remove 1 to the mud status at the start of the turn (technically this could
+    # overflow, but it would be very unlikely that a game have 2 ** 31 turns)
+>>>>>>> finish move implementation
     current_game_state.player1_mud -= 1
     current_game_state.player2_mud -= 1
 
@@ -34,6 +39,9 @@ def move(
     )
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> finish move implementation
     _update_misses(
         current_game_state=current_game_state,
         player1_destination=player1_destination,
@@ -106,13 +114,17 @@ def _update_misses(
     player1_destination: Coordinates,
     player2_destination: Coordinates,
 ):
+<<<<<<< HEAD
 =======
 >>>>>>> Add move handler
+=======
+>>>>>>> finish move implementation
     # Update the misses status
     if current_game_state.player1_pos == player1_destination:
         current_game_state.player1_misses += 1
     if current_game_state.player2_pos == player2_destination:
         current_game_state.player2_misses += 1
+<<<<<<< HEAD
 <<<<<<< HEAD
     return
 =======
@@ -137,6 +149,9 @@ def _update_misses(
     #     miss2 = miss2 + 1
     # return player1_location, player2_location, stuck1, stuck2, moves1, moves2, miss1, miss2
 >>>>>>> Add move handler
+=======
+    return
+>>>>>>> finish move implementation
 
 
 def _compute_destination_cell(
@@ -166,6 +181,7 @@ def _get_desired_destination_position(
 ) -> Coordinates:
     x, y = player_position
 <<<<<<< HEAD
+<<<<<<< HEAD
     if move == Move.UP:
         return up(player_position)
     elif move == Move.LEFT:
@@ -177,16 +193,23 @@ def _get_desired_destination_position(
     return x, y
 =======
     destination_cell = (x, y)
+=======
+>>>>>>> finish move implementation
     if move == Move.UP:
-        destination_cell = (x, y + 1)
+        return x, y + 1
     elif move == Move.LEFT:
-        destination_cell = (x - 1, y)
+        return x - 1, y
     elif move == Move.DOWN:
-        destination_cell = (x, y - 1)
+        return x, y - 1
     elif move == Move.RIGHT:
+<<<<<<< HEAD
         destination_cell = (x + 1, y)
     return destination_cell
 >>>>>>> Add move handler
+=======
+        return x + 1, y
+    return x, y
+>>>>>>> finish move implementation
 
 
 def _is_move_possible(

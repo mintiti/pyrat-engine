@@ -30,6 +30,7 @@ class CurrentStateInitializer:
         walls = WallsGenerator().from_maze_config(self.maze_config)
 
         # todo : init mud
+<<<<<<< HEAD
         return CurrentGameState(
             maze_width=self.maze_config.width,
             maze_height=self.maze_config.height,
@@ -37,6 +38,12 @@ class CurrentStateInitializer:
             player2_pos=p2_pos,
             current_cheese_list=cheese_list,
             walls=walls,
+=======
+        return CurrentGameState.from_config(
+            maze_config=self.maze_config,
+            player_config=self.player_config,
+            current_cheese_list=cheese_list,
+>>>>>>> finish move implementation
         )
 
 
@@ -60,9 +67,8 @@ class HistoricStateInitializer:
         )
         # todo : init walls
         # todo : init mud
-        return HistoricGameState(
-            current_game_state=CurrentGameState(
-                player1_pos=p1_pos, player2_pos=p2_pos, current_cheese_list=cheese_list
-            ),
-            original_cheese_list=cheese_list,
+        return HistoricGameState.from_config(
+            maze_config=self.maze_config,
+            player_config=self.player_config,
+            current_cheese_list=cheese_list,
         )

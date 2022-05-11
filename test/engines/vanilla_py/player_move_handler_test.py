@@ -1,4 +1,5 @@
 import pytest
+<<<<<<< HEAD
 
 from pyrat_engine.engines.vanilla_py.player_move_handler import move
 from pyrat_engine.render_utils.simple_printer.simple_printer import SimplePrinter
@@ -128,3 +129,21 @@ class TestPlayerMoveHandler:
             player2_misses=1,
             walls=current_game_state.walls,
         )
+=======
+import random
+
+from pyrat_engine.initializer.initializer import CurrentStateInitializer
+from pyrat_engine.state.base import CurrentGameState
+
+
+@pytest.fixture
+def current_game_state() -> CurrentGameState:
+    random.seed(1)
+    return CurrentStateInitializer()()
+
+
+class TestPlayerMoveHandler:
+    def test_is_move_possible(self, current_game_state: CurrentGameState):
+        print(current_game_state)
+        assert 1 == 2
+>>>>>>> finish move implementation
