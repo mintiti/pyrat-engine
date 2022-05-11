@@ -1,4 +1,4 @@
-from typing import Generator, Iterable, List, Tuple
+from typing import Generator, Iterable, List, Mapping, Tuple
 
 import random
 from dataclasses import dataclass
@@ -52,7 +52,7 @@ class CheeseGenerator:
     ) -> Generator[Coordinates, None, None]:
         # width and height need to be odd if the number of cheeses is odd
         if maze_config.nb_cheese % 1:
-            assert maze_config.width % 2 == 1 & maze_config.height % 2 == 1, (
+            assert maze_config.width % 2 == 1 and maze_config.height % 2 == 1, (
                 f"number of cheeses was {maze_config.nb_cheese}, which is odd,"
                 f"but maze width and maze heights weren't odd.\n  "
             )
@@ -176,3 +176,41 @@ class PlayerPositionGenerator:
         )
         possible_positions_list: List[Coordinates] = list(possible_positions)
         return possible_positions_list[0], possible_positions_list[1]
+
+
+class WallsGenerator:
+    def from_config(
+        self, maze_config: MazeConfig
+    ) -> Mapping[Coordinates, List[Coordinates]]:
+        # width, height, wall_density, symmetric = (
+        #     maze_config.width,
+        #     maze_config.height,
+        #     maze_config.wall_density,
+        #     maze_config.symmetric,
+        # )
+        # possible_walls_number = 2 * width * height - width - height
+        # current_walls = {}
+
+        return {}
+
+    def _random_symmetric_walls_generator(
+        self, width: int, height: int, wall_density: float
+    ) -> Mapping[Coordinates, List[Coordinates]]:
+        # possible_walls_number = 2 * width * height - width - height
+        # current_walls: Mapping[Coordinates, List[Coordinates]] = {}
+        # while (
+        #     self._current_density(possible_walls_number, current_walls) < wall_density
+        # ):
+        #     x = 2
+        return {}
+
+    def _current_density(
+        self,
+        possible_walls_number: int,
+        current_walls: Mapping[Coordinates, List[Coordinates]],
+    ) -> float:
+        number_of_walls = (
+            len([wall for wall_list in current_walls.values() for wall in wall_list])
+            // 2  # We divide by 2 because the walls are repeated for now
+        )
+        return number_of_walls / possible_walls_number

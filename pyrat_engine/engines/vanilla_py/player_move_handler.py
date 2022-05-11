@@ -6,7 +6,8 @@ def move(
     current_game_state: CurrentGameState, p1_move: Move, p2_move: Move
 ) -> CurrentGameState:
 
-    # Update the mud status
+    # Remove 1 to the mud status at the start of the turn (technically this could
+    # overflow, but it would be very unlikely that a game have 2 ** 31 turns)
     current_game_state.player1_mud -= 1
     current_game_state.player2_mud -= 1
 
@@ -26,31 +27,84 @@ def move(
         move=p2_move,
     )
 
+    _update_misses(
+        current_game_state=current_game_state,
+        player1_destination=player1_destination,
+        player2_destination=player2_destination,
+    )
+    _update_mud_status(
+        current_game_state=current_game_state,
+        player1_destination=player1_destination,
+        player2_destination=player2_destination,
+    )
+    _update_players_position(
+        current_game_state=current_game_state,
+        player1_destination=player1_destination,
+        player2_destination=player2_destination,
+    )
+    _update_cheeses_and_score(current_game_state=current_game_state)
+
+    return current_game_state
+
+
+def _update_cheeses_and_score(current_game_state: CurrentGameState):
+    pos1, pos2, cheeses = (
+        current_game_state.player1_pos,
+        current_game_state.player2_pos,
+        current_game_state.current_cheese_list,
+    )
+    if pos1 == pos2 and pos1 in cheeses:
+        cheeses.remove(pos1)
+        current_game_state.player1_score += 0.5
+        current_game_state.player2_score += 0.5
+    if pos1 in cheeses:
+        cheeses.remove(pos1)
+        current_game_state.player1_score += 1
+    if pos2 in cheeses:
+        cheeses.remove(pos2)
+        current_game_state.player2_score += 1
+    return
+
+
+def _update_players_position(
+    current_game_state: CurrentGameState,
+    player1_destination: Coordinates,
+    player2_destination: Coordinates,
+):
+    current_game_state.player1_pos = player1_destination
+    current_game_state.player2_pos = player2_destination
+    return
+
+
+def _update_mud_status(
+    current_game_state: CurrentGameState,
+    player1_destination: Coordinates,
+    player2_destination: Coordinates,
+):
+
+    if current_game_state.player1_mud <= 0:
+        current_game_state.player1_mud = current_game_state.mud.get(
+            current_game_state.player1_pos, {}
+        ).get(player1_destination, 0)
+
+    if current_game_state.player2_mud <= 0:
+        current_game_state.player2_mud = current_game_state.mud.get(
+            current_game_state.player2_pos, {}
+        ).get(player2_destination, 0)
+    return
+
+
+def _update_misses(
+    current_game_state: CurrentGameState,
+    player1_destination: Coordinates,
+    player2_destination: Coordinates,
+):
     # Update the misses status
     if current_game_state.player1_pos == player1_destination:
         current_game_state.player1_misses += 1
     if current_game_state.player2_pos == player2_destination:
         current_game_state.player2_misses += 1
-
-    # TODO: Compute which cheeses have been taken
-    # TODO: Compute the updated score
-
-    return current_game_state
-    # cell1 = cell_of_decision(player1_location, decision1)
-    # cell2 = cell_of_decision(player2_location, decision2)
-    # if cell1 in maze[player1_location]:
-    #     stuck1 = maze[player1_location][cell1]
-    #     player1_location = cell1
-    #     moves1 = moves1 + 1
-    # elif stuck1 <= 0:
-    #     miss1 = miss1 + 1
-    # if cell2 in maze[player2_location]:
-    #     stuck2 = maze[player2_location][cell2]
-    #     player2_location = cell2
-    #     moves2 = moves2 + 1
-    # elif stuck2 <= 0:
-    #     miss2 = miss2 + 1
-    # return player1_location, player2_location, stuck1, stuck2, moves1, moves2, miss1, miss2
+    return
 
 
 def _compute_destination_cell(
@@ -79,16 +133,15 @@ def _get_desired_destination_position(
     player_position: Coordinates, move: Move
 ) -> Coordinates:
     x, y = player_position
-    destination_cell = (x, y)
     if move == Move.UP:
-        destination_cell = (x, y + 1)
+        return x, y + 1
     elif move == Move.LEFT:
-        destination_cell = (x - 1, y)
+        return x - 1, y
     elif move == Move.DOWN:
-        destination_cell = (x, y - 1)
+        return x, y - 1
     elif move == Move.RIGHT:
-        destination_cell = (x + 1, y)
-    return destination_cell
+        return x + 1, y
+    return x, y
 
 
 def _is_move_possible(

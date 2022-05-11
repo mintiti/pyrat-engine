@@ -2,6 +2,7 @@ from typing import List, Mapping
 
 from dataclasses import dataclass, field
 
+from pyrat_engine.initializer.configs import MazeConfig, PlayerConfig
 from pyrat_engine.types import Coordinates, Move
 
 
@@ -30,7 +31,11 @@ class CurrentGameState:
     # Player 1
     player1_pos: Coordinates = (0, 0)
     # Current score
+<<<<<<< HEAD
     player1_score: int = 0
+=======
+    player1_score: float
+>>>>>>> finish move implementation
     # Current mud
     player1_mud: int = 0
     # Current number of misses
@@ -39,7 +44,11 @@ class CurrentGameState:
     # Player 2
     player2_pos: Coordinates = (maze_width, maze_height)
     # Current score
+<<<<<<< HEAD
     player2_score: int = 0
+=======
+    player2_score: float
+>>>>>>> finish move implementation
     # Current mud
     player2_mud: int = 0
     # Current number of misses
@@ -49,35 +58,31 @@ class CurrentGameState:
     player2_misses: int
 
     @staticmethod
-    def from_defaults(
-        maze_config,
-        player_config,
-        current_cheese_list,
+    def from_config(
+        maze_config: MazeConfig,
+        player_config: PlayerConfig,
+        current_cheese_list: List[Coordinates],
     ) -> "CurrentGameState":
 
         current_cheese_list = [] if current_cheese_list is None else current_cheese_list
 
-        walls: Dict[Coordinates, List[Coordinates]] = (
-            {} if maze_config.walls is None else maze_config.walls
-        )
+        walls: Dict[Coordinates, List[Coordinates]] = {}
 
-        mud: Dict[Coordinates, Dict[Coordinates, int]] = (
-            {} if maze_config.mud is None else maze_config.mud
-        )
+        mud: Dict[Coordinates, Dict[Coordinates, int]] = {}
 
         player1_pos = (
             (0, 0) if player_config.player1_pos is None else player_config.player1_pos
         )
 
         player2_pos = (
-            (maze_config.maze_width - 1, maze_config.maze_height - 1)
+            (maze_config.width - 1, maze_config.height - 1)
             if player_config.player2_pos is None
             else player_config.player2_pos
         )
 
         return CurrentGameState(
-            maze_width=maze_config.maze_width,
-            maze_height=maze_config.maze_height,
+            maze_width=maze_config.width,
+            maze_height=maze_config.height,
             current_cheese_list=current_cheese_list,
             walls=walls,
             mud=mud,
@@ -111,7 +116,7 @@ class HistoricGameState:
     player2_moves_history: List[Move]
 
     @staticmethod
-    def from_defaults(
+    def from_config(
         maze_config,
         player_config,
         current_cheese_list,
