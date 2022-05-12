@@ -49,12 +49,12 @@ def test_maze_string_normal(maze_2_2: CurrentGameState, printer: SimplePrinter):
     assert (
         ret
         == """
-    + ―― + ―― +
- 1  | C  |\x1b[1;32m S  \x1b[0m|
-    +    +    +
- 0  |\x1b[1;31m R  \x1b[0m| C  |
-    + ―― + ―― +
-    + 0  + 1  """
+     + ――― + ――― +
+  1  |  C  |\x1b[1;32m  S  \x1b[0m|
+     +     +     +
+  0  |\x1b[1;31m  R  \x1b[0m|  C  |
+     + ――― + ――― +
+     +  0  +  1  """
     )
 
 
@@ -65,10 +65,10 @@ def test_maze_string_mud(maze_2_2_mud: CurrentGameState, printer: SimplePrinter)
     assert (
         ret
         == """
-    + ―― + ―― +
- 1  | C   \x1b[1;32m S  \x1b[0m|
-    + ┈┈ +    +
- 0  |\x1b[1;31m R  \x1b[0m┊ C  |
-    + ―― + ―― +
-    + 0  + 1  """
+     + ――― + ――― +
+  1  |  C   \x1b[1;32m  S  \x1b[0m|
+     + ┈┈┈ +     +
+  0  |\x1b[1;31m  R  \x1b[0m┊  C  |
+     + ――― + ――― +
+     +  0  +  1  """
     )

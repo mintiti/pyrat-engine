@@ -6,8 +6,6 @@ from pyrat_engine.utils import down, left, right, up
 def move(
     current_game_state: CurrentGameState, p1_move: Move, p2_move: Move
 ) -> CurrentGameState:
-
-    # Update the mud status
     current_game_state.player1_mud -= 1
     current_game_state.player2_mud -= 1
 

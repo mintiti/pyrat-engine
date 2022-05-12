@@ -37,6 +37,10 @@ class CurrentGameStateReader:
         for cheese in self.current_game_state.current_cheese_list:
             self.cell_elements[cheese[0]][cheese[1]] = assets.CHEESE
 
+        self._place_players()
+
+        return
+
     def _place_players(self):
         # Place the players
         if (
@@ -63,6 +67,7 @@ class CurrentGameStateReader:
                 self.cell_elements[self.current_game_state.player1_pos[0]][
                     self.current_game_state.player1_pos[1]
                 ] = assets.RAT
+
             if (
                 self.current_game_state.player2_pos
                 in self.current_game_state.current_cheese_list
