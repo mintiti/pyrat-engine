@@ -1,4 +1,4 @@
-from typing import List, Mapping, Optional
+from typing import Dict, List, Optional
 
 from dataclasses import dataclass
 from enum import Enum, IntEnum, unique
@@ -39,14 +39,14 @@ class MazeConfig:
     symmetric: bool = True
     is_connected: bool = True
     # The following is ignored unless wall_mode is WallMode.CUSTOM
-    walls: Optional[Mapping[Coordinates, Coordinates]] = None
+    walls: Optional[Dict[Coordinates, List[Coordinates]]] = None
 
     # Mud
     mud_mode: MudMode = MudMode.RANDOM
     mud_density: float = 0.1
     mud_range: int = 10
     # The following is ignored unless mud_mode is MudMode.CUSTOM
-    mud: Optional[Mapping[Coordinates, Mapping[Coordinates, int]]] = None
+    mud: Optional[Dict[Coordinates, Dict[Coordinates, int]]] = None
 
     # Cheeses
     # provide a list of cheese coordinates if you want a custom list of cheeses
