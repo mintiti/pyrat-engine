@@ -1,5 +1,6 @@
 from pyrat_engine.state.base import CurrentGameState
 from pyrat_engine.types import Coordinates, Move
+from pyrat_engine.utils import down, left, right, up
 
 
 def move(
@@ -132,13 +133,13 @@ def _get_desired_destination_position(
 ) -> Coordinates:
     x, y = player_position
     if move == Move.UP:
-        return x, y + 1
+        return up(player_position)
     elif move == Move.LEFT:
-        return x - 1, y
+        return left(player_position)
     elif move == Move.DOWN:
-        return x, y - 1
+        return down(player_position)
     elif move == Move.RIGHT:
-        return x + 1, y
+        return right(player_position)
     return x, y
 
 
