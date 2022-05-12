@@ -1,4 +1,4 @@
-from typing import Callable, Generator, Iterable, List, Mapping, Set, Tuple
+from typing import Generator, Iterable, List, Mapping, Set, Tuple
 
 import copy
 import random
@@ -271,8 +271,8 @@ class WallsGenerator:
     ) -> Tuple[int, List[Wall], Mapping[Coordinates, List[Coordinates]]]:
         nodes = [(x, y) for x in range(width) for y in range(height)]
         disjoint_set = DisjointSet(nodes)
-        walls: Mapping[Coordinates, List[Coordinates]] = dict(
-            self._all_walls_generator(width=width, height=height, nodes=nodes)
+        walls: Mapping[Coordinates, List[Coordinates]] = self._all_walls_generator(
+            width=width, height=height, nodes=nodes
         )
         all_possible_walls: List[Wall] = self._get_wall_list(
             width=width, height=height, nodes=nodes
@@ -315,38 +315,37 @@ class WallsGenerator:
     def _get_wall_list(
         self, width: int, height: int, nodes: List[Coordinates]
     ) -> List[Wall]:
-        result: List[Wall] = []
-        for (x, y) in nodes:
-            if self._is_inbound(width, height)((x + 1, y)):
-                result.append(((x, y), (x + 1, y)))
-            if self._is_inbound(width, height)((x, y + 1)):
-                result.append(((x, y), (x, y + 1)))
-        return result
+        return [
+            ((x, y), (x + offset_x, y + offset_y))
+            for (x, y) in nodes
+            for (offset_x, offset_y) in [(1, 0), (0, 1)]
+            if self._is_inbound(
+                width=width, height=height, node=(x + offset_x, y + offset_y)
+            )
+        ]
 
     def _all_walls_generator(
         self, width: int, height: int, nodes: List[Coordinates]
-    ) -> Generator[Tuple[Coordinates, List[Coordinates]], None, None]:
-        for node in nodes:
-            yield (
-                node,
-                list(
-                    filter(
-                        self._is_inbound(width=width, height=height),
-                        self._get_all_neighbors(node),
-                    )
-                ),
+    ) -> Mapping[Coordinates, List[Coordinates]]:
+        return {
+            (x, y): self._get_all_inbound_neighbors(
+                width=width, height=height, node=(x, y)
             )
+            for (x, y) in nodes
+        }
 
-    def _get_all_neighbors(self, node: Coordinates):
+    def _get_all_inbound_neighbors(
+        self, width: int, height: int, node: Coordinates
+    ) -> List[Coordinates]:
         (x, y) = node
         return [
             (x + offset_x, y + offset_y)
             for (offset_x, offset_y) in [(0, 1), (0, -1), (1, 0), (-1, 0)]
+            if self._is_inbound(
+                width=width, height=height, node=(x + offset_x, y + offset_y)
+            )
         ]
 
-    def _is_inbound(self, width: int, height: int) -> Callable[[Coordinates], bool]:
-        def _internal_is_inbound(node: Coordinates) -> bool:
-            (x, y) = node
-            return not (x < 0 or x >= width or y < 0 or y >= height)
-
-        return _internal_is_inbound
+    def _is_inbound(self, width: int, height: int, node: Coordinates) -> bool:
+        x, y = node
+        return not (x < 0 or x >= width or y < 0 or y >= height)
