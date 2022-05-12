@@ -91,4 +91,4 @@ def valid_neighbors(
     def validate_coordinate(coord: Coordinates) -> bool:
         return is_coordinate_valid(coord, maze_width, maze_height)
 
-    return list(filter(validate_coordinate, neighbors(coordinate)))
+    return [neighbor for neighbor in neighbors(coordinate) if is_coordinate_valid(neighbor, maze_width, maze_height)]
