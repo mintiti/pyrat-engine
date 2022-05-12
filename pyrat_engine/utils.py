@@ -59,7 +59,7 @@ def is_coordinate_valid(
     Returns:
         Whether the coordinate is valid in the maze
     """
-    return 0 <= coordinate[0] < maze_width and 0 < coordinate[1] < maze_height
+    return 0 <= coordinate[0] < maze_width and 0 <= coordinate[1] < maze_height
 
 
 def neighbors(coordinate: Coordinates):
