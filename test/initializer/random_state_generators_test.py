@@ -1,6 +1,11 @@
 import pytest
+import random
 
-from pyrat_engine.initializer.random_state_generators import PlayerPositionGenerator
+from pyrat_engine.initializer.configs import MazeConfig
+from pyrat_engine.initializer.random_state_generators import (
+    PlayerPositionGenerator,
+    WallsGenerator,
+)
 
 
 @pytest.fixture
@@ -48,3 +53,36 @@ class TestPlayerPositionGenerator:
 
             assert p2_pos[0] < 21
             assert p2_pos[1] < 15
+
+
+class TestWallsGenerator:
+    def test_wall_generator_symmetric(self, small_maze_config: MazeConfig):
+        random.seed(1)
+        walls = WallsGenerator().from_maze_config(small_maze_config)
+        assert walls == {
+            (0, 0): [],
+            (0, 1): [(0, 2)],
+            (0, 2): [(0, 1)],
+            (0, 3): [(0, 4)],
+            (0, 4): [(0, 3)],
+            (1, 0): [],
+            (1, 1): [],
+            (1, 2): [(1, 3)],
+            (1, 3): [(1, 4), (1, 2)],
+            (1, 4): [(1, 3)],
+            (2, 0): [(2, 1)],
+            (2, 1): [(2, 0)],
+            (2, 2): [],
+            (2, 3): [(2, 4)],
+            (2, 4): [(2, 3)],
+            (3, 0): [(3, 1)],
+            (3, 1): [(3, 2), (3, 0)],
+            (3, 2): [(3, 1)],
+            (3, 3): [],
+            (3, 4): [],
+            (4, 0): [(4, 1)],
+            (4, 1): [(4, 0)],
+            (4, 2): [(4, 3)],
+            (4, 3): [(4, 2)],
+            (4, 4): [],
+        }

@@ -28,6 +28,7 @@ class VanillaPyEngine(PyratEngine):
         return deepcopy(self.current_game_state)
 
     def move(self, p1_move: Move, p2_move: Move) -> Tuple[float, float]:
+
         return (0.0, 0.0)  # placeholder for now
 
     def unmove(self, p1_move: Move, p2_move: Move, cheeses: List[Coordinates] = None):

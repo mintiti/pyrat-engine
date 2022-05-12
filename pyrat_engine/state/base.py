@@ -26,16 +26,16 @@ class CurrentGameState:
     # Player 1
     player1_pos: Coordinates = (0, 0)
     # Current score
-    player1_score: int = 0
+    player1_score: float = 0
     # Current mud
     player1_mud: int = 0
     # Current number of misses
     player1_misses: int = 0
 
     # Player 2
-    player2_pos: Coordinates = (maze_width, maze_height)
+    player2_pos: Coordinates = (maze_width - 1, maze_height - 1)
     # Current score
-    player2_score: int = 0
+    player2_score: float = 0
     # Current mud
     player2_mud: int = 0
     # Current number of misses

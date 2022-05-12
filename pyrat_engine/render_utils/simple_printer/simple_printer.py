@@ -81,7 +81,8 @@ class CurrentGameStateReader:
         return assets.EMPTY if is_horizontal else assets.VERTICAL_NOTHING
 
     def _get_intersection(self, coordinate: Coordinates, direction: Move):
-        """Return the asset to represent the intersection between coordinate and the cell in direction"""
+        """Return the asset to represent the intersection between coordinate and the
+        cell in direction"""
         if direction == Move.UP:
             return self._intersection_between_coordinate_and_other(
                 coordinate, up(coordinate), is_horizontal=True
