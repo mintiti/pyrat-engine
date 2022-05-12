@@ -1,5 +1,6 @@
-from typing import Generator, Iterable, List, Mapping, Tuple
+from typing import Callable, Generator, Iterable, List, Mapping, Set, Tuple
 
+import copy
 import random
 from dataclasses import dataclass
 from itertools import filterfalse, product
@@ -178,39 +179,174 @@ class PlayerPositionGenerator:
         return possible_positions_list[0], possible_positions_list[1]
 
 
+Wall = Tuple[Coordinates, Coordinates]
+
+
+class DisjointSet:
+    def __init__(self, nodes: List[Coordinates]):
+        self.parent = {n: n for n in nodes}
+        self.rank = {n: 0 for n in nodes}
+
+    def find(self, node: Coordinates) -> Coordinates:
+        current, parent = node, self.parent[node]
+        while current != parent:
+            current, parent = (
+                self.parent[current],
+                self.parent[parent],
+            )
+        return current
+
+    def union(self, x: Coordinates, y: Coordinates):
+        x = self.find(x)
+        y = self.find(y)
+
+        if x == y:
+            return
+
+        if self.rank[x] < self.rank[y]:
+            x, y = y, x
+
+        #  Make x the new root
+        self.parent[y] = x
+        if self.rank[x] == self.rank[y]:
+            self.rank[x] += 1
+        return
+
+
 class WallsGenerator:
-    def from_config(
+    def from_maze_config(
         self, maze_config: MazeConfig
     ) -> Mapping[Coordinates, List[Coordinates]]:
-        # width, height, wall_density, symmetric = (
-        #     maze_config.width,
-        #     maze_config.height,
-        #     maze_config.wall_density,
-        #     maze_config.symmetric,
-        # )
-        # possible_walls_number = 2 * width * height - width - height
-        # current_walls = {}
-
-        return {}
-
-    def _random_symmetric_walls_generator(
-        self, width: int, height: int, wall_density: float
-    ) -> Mapping[Coordinates, List[Coordinates]]:
-        # possible_walls_number = 2 * width * height - width - height
-        # current_walls: Mapping[Coordinates, List[Coordinates]] = {}
-        # while (
-        #     self._current_density(possible_walls_number, current_walls) < wall_density
-        # ):
-        #     x = 2
-        return {}
-
-    def _current_density(
-        self,
-        possible_walls_number: int,
-        current_walls: Mapping[Coordinates, List[Coordinates]],
-    ) -> float:
-        number_of_walls = (
-            len([wall for wall_list in current_walls.values() for wall in wall_list])
-            // 2  # We divide by 2 because the walls are repeated for now
+        width, height, wall_density, is_symmetric = (
+            maze_config.width,
+            maze_config.height,
+            maze_config.wall_density,
+            maze_config.symmetric,
         )
-        return number_of_walls / possible_walls_number
+
+        return self._generate_random_walls(
+            width=width,
+            height=height,
+            wall_density=wall_density,
+            is_symmetric=is_symmetric,
+        )
+
+    def _generate_random_walls(
+        self, width: int, height: int, wall_density: float, is_symmetric: bool
+    ) -> Mapping[Coordinates, List[Coordinates]]:
+        (
+            number_of_all_walls,
+            remaining_walls_list,
+            walls,
+        ) = self._kruskal(width=width, height=height, is_symmetric=is_symmetric)
+        random.shuffle(remaining_walls_list)
+        visited: Set[Wall] = set()
+
+        # We calculate the density with regards to the number of remaining walls after
+        # kruskal
+        number_of_walls = copy.copy(number_of_all_walls)
+        for (node, other_node) in remaining_walls_list:
+            if number_of_walls / number_of_all_walls <= wall_density:
+                break
+
+            if (node, other_node) in visited:
+                continue
+            walls[node].remove(other_node)
+            walls[other_node].remove(node)
+            number_of_walls -= 1
+            visited.add((node, other_node))
+            if not is_symmetric:
+                continue
+            sym_node = central_symmetrical(node, width, height)
+            other_sym_node = central_symmetrical(other_node, width, height)
+            walls[sym_node].remove(other_sym_node)
+            walls[other_sym_node].remove(sym_node)
+            number_of_walls -= 1
+            visited.add((other_sym_node, sym_node))
+
+        return walls
+
+    def _kruskal(
+        self, width: int, height: int, is_symmetric: bool
+    ) -> Tuple[int, List[Wall], Mapping[Coordinates, List[Coordinates]]]:
+        nodes = [(x, y) for x in range(width) for y in range(height)]
+        disjoint_set = DisjointSet(nodes)
+        walls: Mapping[Coordinates, List[Coordinates]] = dict(
+            self._all_walls_generator(width=width, height=height, nodes=nodes)
+        )
+        all_possible_walls: List[Wall] = self._get_wall_list(
+            width=width, height=height, nodes=nodes
+        )
+        random.shuffle(all_possible_walls)
+        number_of_walls: int = len(all_possible_walls)
+        removed_walls: List[Wall] = []
+        for (node, other_node) in all_possible_walls:
+            if disjoint_set.find(node) == disjoint_set.find(other_node):
+                continue
+            walls[node].remove(other_node)
+            walls[other_node].remove(node)
+            number_of_walls -= 1
+            disjoint_set.union(node, other_node)
+            removed_walls.append((node, other_node))
+
+            if not is_symmetric:
+                continue
+
+            sym_node = central_symmetrical(node, width, height)
+            other_sym_node = central_symmetrical(other_node, width, height)
+            if disjoint_set.find(sym_node) == disjoint_set.find(other_sym_node):
+                continue
+            walls[sym_node].remove(other_sym_node)
+            walls[other_sym_node].remove(sym_node)
+            number_of_walls -= 1
+            disjoint_set.union(sym_node, other_sym_node)
+            removed_walls.append((other_sym_node, sym_node))
+
+        remaining_walls_list = all_possible_walls
+        for wall in removed_walls:
+            remaining_walls_list.remove(wall)
+
+        return (
+            number_of_walls,
+            remaining_walls_list,
+            walls,
+        )
+
+    def _get_wall_list(
+        self, width: int, height: int, nodes: List[Coordinates]
+    ) -> List[Wall]:
+        result: List[Wall] = []
+        for (x, y) in nodes:
+            if self._is_inbound(width, height)((x + 1, y)):
+                result.append(((x, y), (x + 1, y)))
+            if self._is_inbound(width, height)((x, y + 1)):
+                result.append(((x, y), (x, y + 1)))
+        return result
+
+    def _all_walls_generator(
+        self, width: int, height: int, nodes: List[Coordinates]
+    ) -> Generator[Tuple[Coordinates, List[Coordinates]], None, None]:
+        for node in nodes:
+            yield (
+                node,
+                list(
+                    filter(
+                        self._is_inbound(width=width, height=height),
+                        self._get_all_neighbors(node),
+                    )
+                ),
+            )
+
+    def _get_all_neighbors(self, node: Coordinates):
+        (x, y) = node
+        return [
+            (x + offset_x, y + offset_y)
+            for (offset_x, offset_y) in [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        ]
+
+    def _is_inbound(self, width: int, height: int) -> Callable[[Coordinates], bool]:
+        def _internal_is_inbound(node: Coordinates) -> bool:
+            (x, y) = node
+            return not (x < 0 or x >= width or y < 0 or y >= height)
+
+        return _internal_is_inbound

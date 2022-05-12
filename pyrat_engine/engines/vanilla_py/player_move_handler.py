@@ -6,8 +6,6 @@ def move(
     current_game_state: CurrentGameState, p1_move: Move, p2_move: Move
 ) -> CurrentGameState:
 
-    # Remove 1 to the mud status at the start of the turn (technically this could
-    # overflow, but it would be very unlikely that a game have 2 ** 31 turns)
     current_game_state.player1_mud -= 1
     current_game_state.player2_mud -= 1
 
