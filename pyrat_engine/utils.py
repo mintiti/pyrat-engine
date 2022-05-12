@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 from pyrat_engine.types import Coordinates
 
@@ -87,8 +87,17 @@ def valid_neighbors(
     Returns:
         The list of valid coordinates.
     """
+    return [
+        neighbor
+        for neighbor in neighbors(coordinate)
+        if is_coordinate_valid(neighbor, maze_width, maze_height)
+    ]
 
-    def validate_coordinate(coord: Coordinates) -> bool:
-        return is_coordinate_valid(coord, maze_width, maze_height)
 
-    return [neighbor for neighbor in neighbors(coordinate) if is_coordinate_valid(neighbor, maze_width, maze_height)]
+def order_node_pair(
+    node: Coordinates, other_node: Coordinates
+) -> Tuple[Coordinates, Coordinates]:
+    """
+    Orders the pair of node to have a consitent representation of pairs of coordinates
+    """
+    return (node, other_node) if node <= other_node else (other_node, node)

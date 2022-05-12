@@ -1,11 +1,11 @@
-from typing import Dict, List, Tuple
+from typing import Dict, List, Set, Tuple
 
 import random
 from itertools import product
 
 from pyrat_engine.initializer.configs import MazeConfig, MudMode
-from pyrat_engine.types import Coordinates
-from pyrat_engine.utils import central_symmetrical, valid_neighbors
+from pyrat_engine.types import Coordinates, Mud
+from pyrat_engine.utils import central_symmetrical, order_node_pair, valid_neighbors
 
 
 def _is_wall_present(
@@ -20,12 +20,8 @@ def _is_wall_present(
 
 
 class MudGenerator:
-    def __init__(self, maze_width: int, maze_height: int):
-        self.maze_width = maze_width
-        self.maze_height = maze_height
-
-    def from_config(
-        self, walls: Dict[Coordinates, List[Coordinates]], maze_config: MazeConfig
+    def from_maze_config_and_walls(
+        self, maze_config: MazeConfig, walls: Dict[Coordinates, List[Coordinates]]
     ) -> Dict[Coordinates, Dict[Coordinates, int]]:
         """
         Dispatch creating the mud configuration from a maze configuration
@@ -34,15 +30,11 @@ class MudGenerator:
             maze_config: The maze_config to parse
 
         Returns:
-            A mud mapping
+            A mud Dict
         """
         if maze_config.mud_mode == MudMode.RANDOM:
-            return (
-                self._symmetric(maze_config.mud_density, maze_config.mud_range, walls)
-                if maze_config.symmetric
-                else self._asymmetric(
-                    maze_config.mud_density, maze_config.mud_range, walls
-                )
+            return self._generate_mud(
+                maze_config, walls, is_symmetric=maze_config.symmetric
             )
         else:
             assert (
@@ -50,52 +42,69 @@ class MudGenerator:
             ), "mud_mode is MudMode.RANDOM, but not mud was provided."
             return maze_config.mud
 
-    def _symmetric(
+    def _generate_mud(
         self,
-        mud_density: float,
-        mud_range: int,
+        maze_config: MazeConfig,
         walls: Dict[Coordinates, List[Coordinates]],
+        is_symmetric: bool,
     ) -> Dict[Coordinates, Dict[Coordinates, int]]:
         """
         Return a symmetric mud configuration.
         Returns:
-            The Mapping of mud
+            The Dict of mud
         """
-        possible_muds = self._possible_muds(walls)
+        possible_muds = self._possible_muds(maze_config, walls)
         muds: Dict[Coordinates, Dict[Coordinates, int]] = {}
-        # Possible to make this better as there's extra work being done
+        number_of_muds = 0
+        random.shuffle(possible_muds)
+        visited_muds: Set[Mud] = set()
+
         for mud in possible_muds:
-            if random.random() > mud_density / 2:
-                value = self._get_mud_value(mud_range)
-                self._add_mud(muds, mud[0], mud[1], value)
-                # Add the symmetrical mud
-                symmetric_0 = central_symmetrical(
-                    mud[0], self.maze_width, self.maze_height
-                )
-                symmetric_1 = central_symmetrical(
-                    mud[1], self.maze_width, self.maze_height
-                )
-                self._add_mud(muds, symmetric_0, symmetric_1, value)
+            if number_of_muds / len(possible_muds) >= maze_config.mud_density:
+                break
+            node, other_node = mud
+            if order_node_pair(node, other_node) in visited_muds:
+                continue
+            value = self._get_mud_value(maze_config.mud_range)
+            self._add_mud(muds, node, other_node, value)
+            visited_muds.add(order_node_pair(node, other_node))
+            number_of_muds += 1
+
+            if not is_symmetric:
+                continue
+            # Add the symmetrical mud
+            symmetric_0 = central_symmetrical(
+                mud[0], maze_config.width, maze_config.height
+            )
+            symmetric_1 = central_symmetrical(
+                mud[1], maze_config.width, maze_config.height
+            )
+            self._add_mud(muds, symmetric_0, symmetric_1, value)
+            visited_muds.add(order_node_pair(symmetric_0, symmetric_1))
+            number_of_muds += 1
         return muds
 
     def _asymmetric(
         self,
-        mud_density: float,
-        mud_range: int,
+        maze_config: MazeConfig,
         walls: Dict[Coordinates, List[Coordinates]],
     ) -> Dict[Coordinates, Dict[Coordinates, int]]:
         """
         Return a mud configuration without any constraints.
         Returns:
-            The Mapping of mud
+            The Dict of mud
         """
-        possible_muds = self._possible_muds(walls)
+        possible_muds = self._possible_muds(maze_config, walls)
         muds: Dict[Coordinates, Dict[Coordinates, int]] = {}
-        # Possible to make this better as there's extra work being done
+        number_of_muds = 0
+        random.shuffle(possible_muds)
+
         for mud in possible_muds:
-            if random.random() > mud_density:
-                value = self._get_mud_value(mud_range)
-                self._add_mud(muds, mud[0], mud[1], value)
+            if number_of_muds / len(possible_muds) > maze_config.mud_density:
+                break
+            value = self._get_mud_value(maze_config.mud_range)
+            self._add_mud(muds, mud[0], mud[1], value)
+            number_of_muds += 1
         return muds
 
     def _get_mud_value(self, mud_range: int) -> int:
@@ -123,14 +132,15 @@ class MudGenerator:
         mud[neighbor][coordinate] = value
 
     def _possible_muds(
-        self, walls: Dict[Coordinates, List[Coordinates]]
+        self, maze_config: MazeConfig, walls: Dict[Coordinates, List[Coordinates]]
     ) -> List[Tuple[Coordinates, Coordinates]]:
         mud_pairs: List[Tuple[Coordinates, Coordinates]] = []
-        coordinates = product(range(self.maze_width), range(self.maze_height))
+        coordinates = product(range(maze_config.width), range(maze_config.height))
         # Create all possible muds
         for coordinate in coordinates:
-            neighbors = valid_neighbors(coordinate, self.maze_width, self.maze_height)
-            for neighbor in neighbors:
+            for neighbor in valid_neighbors(
+                coordinate, maze_config.width, maze_config.height
+            ):
                 pair = (coordinate, neighbor)
                 reverse_pair = (neighbor, coordinate)
                 if (pair not in mud_pairs) and (reverse_pair not in mud_pairs):

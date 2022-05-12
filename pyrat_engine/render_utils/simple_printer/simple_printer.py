@@ -37,18 +37,43 @@ class CurrentGameStateReader:
         for cheese in self.current_game_state.current_cheese_list:
             self.cell_elements[cheese[0]][cheese[1]] = assets.CHEESE
 
+    def _place_players(self):
         # Place the players
-        if self.current_game_state.player1_pos == self.current_game_state.player2_pos:
+        if (
+            self.current_game_state.player1_pos == self.current_game_state.player2_pos
+            and self.current_game_state.player1_pos
+            in self.current_game_state.current_cheese_list
+        ):
+            self.cell_elements[self.current_game_state.player1_pos[0]][
+                self.current_game_state.player1_pos[1]
+            ] = assets.RAT_AND_SNAKE_AND_CHEESE
+        elif self.current_game_state.player1_pos == self.current_game_state.player2_pos:
             self.cell_elements[self.current_game_state.player1_pos[0]][
                 self.current_game_state.player1_pos[1]
             ] = assets.RAT_AND_SNAKE
         else:
-            self.cell_elements[self.current_game_state.player1_pos[0]][
-                self.current_game_state.player1_pos[1]
-            ] = assets.RAT
-            self.cell_elements[self.current_game_state.player2_pos[0]][
-                self.current_game_state.player2_pos[1]
-            ] = assets.SNAKE
+            if (
+                self.current_game_state.player1_pos
+                in self.current_game_state.current_cheese_list
+            ):
+                self.cell_elements[self.current_game_state.player1_pos[0]][
+                    self.current_game_state.player1_pos[1]
+                ] = assets.RAT_AND_CHEESE
+            else:
+                self.cell_elements[self.current_game_state.player1_pos[0]][
+                    self.current_game_state.player1_pos[1]
+                ] = assets.RAT
+            if (
+                self.current_game_state.player2_pos
+                in self.current_game_state.current_cheese_list
+            ):
+                self.cell_elements[self.current_game_state.player2_pos[0]][
+                    self.current_game_state.player2_pos[1]
+                ] = assets.SNAKE_AND_CHEESE
+            else:
+                self.cell_elements[self.current_game_state.player2_pos[0]][
+                    self.current_game_state.player2_pos[1]
+                ] = assets.SNAKE
 
     def _init_intersections(self) -> None:
         """Initialize the intersections between cells"""

@@ -12,14 +12,14 @@ def move(
     current_game_state.player2_mud -= 1
 
     # Compute the destination cells
-    is_player1_stuck = current_game_state.player1_mud > 0
+    is_player1_stuck = current_game_state.player1_mud >= 0
     player1_destination = _compute_destination_cell(
         current_game_state=current_game_state,
         is_player_stuck=is_player1_stuck,
         player_position=current_game_state.player1_pos,
         move=p1_move,
     )
-    is_player2_stuck = current_game_state.player2_mud > 0
+    is_player2_stuck = current_game_state.player2_mud >= 0
     player2_destination = _compute_destination_cell(
         current_game_state=current_game_state,
         is_player_stuck=is_player2_stuck,
@@ -48,21 +48,27 @@ def move(
 
 
 def _update_cheeses_and_score(current_game_state: CurrentGameState):
-    pos1, pos2, cheeses = (
+    pos1, pos2, stuck1, stuck2, cheeses = (
         current_game_state.player1_pos,
         current_game_state.player2_pos,
+        current_game_state.player1_mud
+        > 0,  # This stuck1 is intentionally different from the one in move
+        current_game_state.player2_mud > 0,
         current_game_state.current_cheese_list,
     )
-    if pos1 == pos2 and pos1 in cheeses:
+
+    if not (stuck1 or stuck2) and pos1 == pos2 and pos1 in cheeses:
         cheeses.remove(pos1)
         current_game_state.player1_score += 0.5
         current_game_state.player2_score += 0.5
-    if pos1 in cheeses:
+
+    if not (stuck1) and pos1 in cheeses:
         cheeses.remove(pos1)
         current_game_state.player1_score += 1
-    if pos2 in cheeses:
+    if not (stuck2) and pos2 in cheeses:
         cheeses.remove(pos2)
         current_game_state.player2_score += 1
+
     return
 
 
@@ -99,7 +105,6 @@ def _update_misses(
     player1_destination: Coordinates,
     player2_destination: Coordinates,
 ):
-    # Update the misses status
     if current_game_state.player1_pos == player1_destination:
         current_game_state.player1_misses += 1
     if current_game_state.player2_pos == player2_destination:
