@@ -1,4 +1,4 @@
-from typing import List, Mapping
+from typing import Dict, List
 
 from dataclasses import dataclass, field
 
@@ -18,10 +18,10 @@ class CurrentGameState:
     current_cheese_list: List[Coordinates] = field(default_factory=list)
 
     # Walls
-    walls: Mapping[Coordinates, List[Coordinates]] = field(default_factory=dict)
+    walls: Dict[Coordinates, List[Coordinates]] = field(default_factory=dict)
 
     # Mud
-    mud: Mapping[Coordinates, Mapping[Coordinates, int]] = field(default_factory=dict)
+    mud: Dict[Coordinates, Dict[Coordinates, int]] = field(default_factory=dict)
 
     # Player 1
     player1_pos: Coordinates = (0, 0)

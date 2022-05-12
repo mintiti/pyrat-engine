@@ -1,3 +1,5 @@
+from typing import List
+
 from pyrat_engine.types import Coordinates
 
 
@@ -42,3 +44,51 @@ def right(coordinate: Coordinates) -> Coordinates:
     Return the coordinate directly right the given coordinate
     """
     return coordinate[0] + 1, coordinate[1]
+
+
+def is_coordinate_valid(
+    coordinate: Coordinates, maze_width: int, maze_height: int
+) -> bool:
+    """
+    Return whether the coordinate is valid in a given maze size
+    Args:
+        coordinate: the coordinates of interest
+        maze_width: the maximum width of the maze
+        maze_height: the maximum height of the maze
+
+    Returns:
+        Whether the coordinate is valid in the maze
+    """
+    return 0 <= coordinate[0] < maze_width and 0 <= coordinate[1] < maze_height
+
+
+def neighbors(coordinate: Coordinates):
+    """
+    Make the list of neighbors of the coordinate, valid or not
+    Args:
+        coordinate: the coordinate of interest
+
+    Returns:
+        The list of neighbor coordinates
+    """
+    return [up(coordinate), down(coordinate), right(coordinate), left(coordinate)]
+
+
+def valid_neighbors(
+    coordinate: Coordinates, maze_width: int, maze_height: int
+) -> List[Coordinates]:
+    """
+    Filter the neighbors of the coordinate to only keep the valid neighbors
+    Args:
+        coordinate: The coordinate of interest.
+        maze_width: Width of the maze
+        maze_height: Height of the maze
+
+    Returns:
+        The list of valid coordinates.
+    """
+
+    def validate_coordinate(coord: Coordinates) -> bool:
+        return is_coordinate_valid(coord, maze_width, maze_height)
+
+    return [neighbor for neighbor in neighbors(coordinate) if is_coordinate_valid(neighbor, maze_width, maze_height)]
