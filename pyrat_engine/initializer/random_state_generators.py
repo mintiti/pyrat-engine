@@ -1,4 +1,4 @@
-from typing import Generator, Iterable, List, Mapping, Set, Tuple
+from typing import Dict, Generator, Iterable, List, Set, Tuple
 
 import copy
 import random
@@ -11,8 +11,8 @@ from pyrat_engine.initializer.configs import (
     MazeConfig,
     PlayerConfig,
 )
-from pyrat_engine.types import Coordinates
-from pyrat_engine.utils import central_symmetrical
+from pyrat_engine.types import Coordinates, Wall
+from pyrat_engine.utils import central_symmetrical, order_node_pair
 
 
 @dataclass
@@ -179,9 +179,6 @@ class PlayerPositionGenerator:
         return possible_positions_list[0], possible_positions_list[1]
 
 
-Wall = Tuple[Coordinates, Coordinates]
-
-
 class DisjointSet:
     def __init__(self, nodes: List[Coordinates]):
         self.parent = {n: n for n in nodes}
@@ -216,7 +213,7 @@ class DisjointSet:
 class WallsGenerator:
     def from_maze_config(
         self, maze_config: MazeConfig
-    ) -> Mapping[Coordinates, List[Coordinates]]:
+    ) -> Dict[Coordinates, List[Coordinates]]:
         width, height, wall_density, is_symmetric = (
             maze_config.width,
             maze_config.height,
@@ -233,7 +230,9 @@ class WallsGenerator:
 
     def _generate_random_walls(
         self, width: int, height: int, wall_density: float, is_symmetric: bool
-    ) -> Mapping[Coordinates, List[Coordinates]]:
+    ) -> Dict[Coordinates, List[Coordinates]]:
+        if wall_density == 0:
+            return {}
         (
             number_of_all_walls,
             remaining_walls_list,
@@ -249,29 +248,31 @@ class WallsGenerator:
             if number_of_walls / number_of_all_walls <= wall_density:
                 break
 
-            if (node, other_node) in visited:
+            if order_node_pair(node, other_node) in visited:
                 continue
             walls[node].remove(other_node)
             walls[other_node].remove(node)
             number_of_walls -= 1
-            visited.add((node, other_node))
+            visited.add(order_node_pair(node, other_node))
             if not is_symmetric:
                 continue
             sym_node = central_symmetrical(node, width, height)
             other_sym_node = central_symmetrical(other_node, width, height)
+            if other_sym_node not in walls[sym_node]:
+                print(sym_node, other_sym_node)
             walls[sym_node].remove(other_sym_node)
             walls[other_sym_node].remove(sym_node)
             number_of_walls -= 1
-            visited.add((other_sym_node, sym_node))
+            visited.add(order_node_pair(other_sym_node, sym_node))
 
         return walls
 
     def _kruskal(
         self, width: int, height: int, is_symmetric: bool
-    ) -> Tuple[int, List[Wall], Mapping[Coordinates, List[Coordinates]]]:
+    ) -> Tuple[int, List[Wall], Dict[Coordinates, List[Coordinates]]]:
         nodes = [(x, y) for x in range(width) for y in range(height)]
         disjoint_set = DisjointSet(nodes)
-        walls: Mapping[Coordinates, List[Coordinates]] = self._all_walls_generator(
+        walls: Dict[Coordinates, List[Coordinates]] = self._all_walls_generator(
             width=width, height=height, nodes=nodes
         )
         all_possible_walls: List[Wall] = self._get_wall_list(
@@ -294,13 +295,11 @@ class WallsGenerator:
 
             sym_node = central_symmetrical(node, width, height)
             other_sym_node = central_symmetrical(other_node, width, height)
-            if disjoint_set.find(sym_node) == disjoint_set.find(other_sym_node):
-                continue
             walls[sym_node].remove(other_sym_node)
             walls[other_sym_node].remove(sym_node)
             number_of_walls -= 1
             disjoint_set.union(sym_node, other_sym_node)
-            removed_walls.append((other_sym_node, sym_node))
+            removed_walls.append(order_node_pair(other_sym_node, sym_node))
 
         remaining_walls_list = all_possible_walls
         for wall in removed_walls:
@@ -316,7 +315,7 @@ class WallsGenerator:
         self, width: int, height: int, nodes: List[Coordinates]
     ) -> List[Wall]:
         return [
-            ((x, y), (x + offset_x, y + offset_y))
+            order_node_pair((x, y), (x + offset_x, y + offset_y))
             for (x, y) in nodes
             for (offset_x, offset_y) in [(1, 0), (0, 1)]
             if self._is_inbound(
@@ -326,7 +325,7 @@ class WallsGenerator:
 
     def _all_walls_generator(
         self, width: int, height: int, nodes: List[Coordinates]
-    ) -> Mapping[Coordinates, List[Coordinates]]:
+    ) -> Dict[Coordinates, List[Coordinates]]:
         return {
             (x, y): self._get_all_inbound_neighbors(
                 width=width, height=height, node=(x, y)

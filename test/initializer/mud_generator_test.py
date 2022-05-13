@@ -2,12 +2,13 @@ import pytest
 
 from pyrat_engine.initializer.configs import MazeConfig, MudMode
 from pyrat_engine.initializer.mud_generator import MudGenerator
+from pyrat_engine.render_utils.simple_printer.simple_printer import SimplePrinter
 from pyrat_engine.utils import central_symmetrical
 
 
 @pytest.fixture
 def config_random_symmetrical() -> MazeConfig:
-    return MazeConfig(mud_mode=MudMode.RANDOM, symmetric=True)
+    return MazeConfig(mud_mode=MudMode.RANDOM, symmetric=True, wall_density=0.5)
 
 
 @pytest.fixture
@@ -15,12 +16,14 @@ def config_random_asymmetrical() -> MazeConfig:
     return MazeConfig(mud_mode=MudMode.RANDOM, symmetric=False)
 
 
+@pytest.fixture
+def printer() -> SimplePrinter:
+    return SimplePrinter()
+
+
 def test_symmetric(config_random_symmetrical: MazeConfig):
     """Test that the symmetric mode works well"""
-    generator = MudGenerator(
-        config_random_symmetrical.width, config_random_symmetrical.height
-    )
-    muds = generator.from_config({}, config_random_symmetrical)
+    muds = MudGenerator().from_maze_config_and_walls(config_random_symmetrical, {})
     for coordinate, neighbors in muds.items():
         for neighbor in neighbors:
             # Mud in the range
@@ -52,10 +55,7 @@ def test_symmetric(config_random_symmetrical: MazeConfig):
 
 def test_asymmetric(config_random_asymmetrical: MazeConfig):
     """Test that the asymmetric works well"""
-    generator = MudGenerator(
-        config_random_asymmetrical.width, config_random_asymmetrical.height
-    )
-    muds = generator.from_config({}, config_random_asymmetrical)
+    muds = MudGenerator().from_maze_config_and_walls(config_random_asymmetrical, {})
     for coordinate, neighbors in muds.items():
         for neighbor in neighbors:
             # Mud in the range

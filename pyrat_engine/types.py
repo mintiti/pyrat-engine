@@ -4,6 +4,10 @@ from enum import Enum
 
 Coordinates = Tuple[int, int]
 
+Wall = Tuple[Coordinates, Coordinates]
+
+Mud = Wall
+
 
 class Move(Enum):
     UP = 0
