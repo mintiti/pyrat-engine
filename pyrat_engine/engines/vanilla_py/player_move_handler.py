@@ -6,25 +6,21 @@ from pyrat_engine.utils import down, left, right, up
 def move(
     current_game_state: CurrentGameState, p1_move: Move, p2_move: Move
 ) -> CurrentGameState:
-    current_game_state.player1_mud -= 1
-    current_game_state.player2_mud -= 1
-
     # Compute the destination cells
-    is_player1_stuck = current_game_state.player1_mud >= 0
+    is_player1_stuck = current_game_state.player1_mud > 0
     player1_destination = _compute_destination_cell(
         current_game_state=current_game_state,
         is_player_stuck=is_player1_stuck,
         player_position=current_game_state.player1_pos,
         move=p1_move,
     )
-    is_player2_stuck = current_game_state.player2_mud >= 0
+    is_player2_stuck = current_game_state.player2_mud > 0
     player2_destination = _compute_destination_cell(
         current_game_state=current_game_state,
         is_player_stuck=is_player2_stuck,
         player_position=current_game_state.player2_pos,
         move=p2_move,
     )
-
     _update_misses(
         current_game_state=current_game_state,
         player1_destination=player1_destination,
@@ -41,7 +37,6 @@ def move(
         player2_destination=player2_destination,
     )
     _update_cheeses_and_score(current_game_state=current_game_state)
-
     return current_game_state
 
 
@@ -54,7 +49,6 @@ def _update_cheeses_and_score(current_game_state: CurrentGameState):
         current_game_state.player2_mud > 0,
         current_game_state.current_cheese_list,
     )
-
     if not (stuck1 or stuck2) and pos1 == pos2 and pos1 in cheeses:
         cheeses.remove(pos1)
         current_game_state.player1_score += 0.5
@@ -66,7 +60,6 @@ def _update_cheeses_and_score(current_game_state: CurrentGameState):
     if not (stuck2) and pos2 in cheeses:
         cheeses.remove(pos2)
         current_game_state.player2_score += 1
-
     return
 
 
@@ -85,16 +78,18 @@ def _update_mud_status(
     player1_destination: Coordinates,
     player2_destination: Coordinates,
 ):
-
     if current_game_state.player1_mud <= 0:
         current_game_state.player1_mud = current_game_state.mud.get(
             current_game_state.player1_pos, {}
         ).get(player1_destination, 0)
-
+    else:
+        current_game_state.player1_mud -= 1
     if current_game_state.player2_mud <= 0:
         current_game_state.player2_mud = current_game_state.mud.get(
             current_game_state.player2_pos, {}
         ).get(player2_destination, 0)
+    else:
+        current_game_state.player2_mud -= 1
     return
 
 
@@ -119,7 +114,6 @@ def _compute_destination_cell(
     desired_destination_position = _get_desired_destination_position(
         player_position=player_position, move=move
     )
-
     # if the move is impossible, return the player's current position
     if not _is_move_possible(
         current_game_state=current_game_state,
@@ -128,7 +122,6 @@ def _compute_destination_cell(
         desired_destination_position=desired_destination_position,
     ):
         return player_position
-
     return desired_destination_position
 
 
@@ -157,7 +150,6 @@ def _is_move_possible(
     # or if the player is stuck
     if player_position == desired_destination_position or is_player_stuck:
         return False
-
     # check if the destination is inside the bounds of the maze
     dest_x, dest_y = desired_destination_position
     if (
@@ -167,7 +159,6 @@ def _is_move_possible(
         or dest_y >= current_game_state.maze_height
     ):
         return False
-
     # check if there is a wall between player position and destination position
     walls = current_game_state.walls
     if (
@@ -175,5 +166,4 @@ def _is_move_possible(
         or player_position in walls[desired_destination_position]
     ):
         return False
-
     return True
