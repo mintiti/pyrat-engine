@@ -1,8 +1,8 @@
-from typing import Dict, List
+from typing import List
 
 from dataclasses import dataclass, field
 
-from pyrat_engine.types import Coordinates, Move
+from pyrat_engine.types import Coordinates, Move, Muds, Walls
 
 
 @dataclass
@@ -18,10 +18,10 @@ class CurrentGameState:
     current_cheese_list: List[Coordinates] = field(default_factory=list)
 
     # Walls
-    walls: Dict[Coordinates, List[Coordinates]] = field(default_factory=dict)
+    walls: Walls = field(default_factory=dict)
 
     # Mud
-    mud: Dict[Coordinates, Dict[Coordinates, int]] = field(default_factory=dict)
+    mud: Muds = field(default_factory=dict)
 
     # Player 1
     player1_pos: Coordinates = (0, 0)

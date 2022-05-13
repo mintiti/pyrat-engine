@@ -1,9 +1,9 @@
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from dataclasses import dataclass
 from enum import Enum, IntEnum, unique
 
-from pyrat_engine.types import Coordinates
+from pyrat_engine.types import Coordinates, Muds, Walls
 
 
 @unique
@@ -39,14 +39,14 @@ class MazeConfig:
     symmetric: bool = True
     is_connected: bool = True
     # The following is ignored unless wall_mode is WallMode.CUSTOM
-    walls: Optional[Dict[Coordinates, List[Coordinates]]] = None
+    walls: Optional[Walls] = None
 
     # Mud
     mud_mode: MudMode = MudMode.RANDOM
     mud_density: float = 0.1
     mud_range: int = 10
     # The following is ignored unless mud_mode is MudMode.CUSTOM
-    mud: Optional[Dict[Coordinates, Dict[Coordinates, int]]] = None
+    mud: Optional[Muds] = None
 
     # Cheeses
     # provide a list of cheese coordinates if you want a custom list of cheeses

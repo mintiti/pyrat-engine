@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Dict, List, Tuple
 
 from enum import Enum
 
@@ -7,6 +7,9 @@ Coordinates = Tuple[int, int]
 Wall = Tuple[Coordinates, Coordinates]
 
 Mud = Wall
+
+Walls = Dict[Coordinates, List[Coordinates]]
+Muds = Dict[Coordinates, Dict[Coordinates, int]]
 
 
 class Move(Enum):
