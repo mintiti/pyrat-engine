@@ -1,6 +1,6 @@
 from typing import List, Tuple
 
-from pyrat_engine.types import Coordinates
+from pyrat_engine.types import Coordinates, Move
 
 
 def central_symmetrical(
@@ -101,3 +101,27 @@ def order_node_pair(
     Orders the pair of node to have a consitent representation of pairs of coordinates
     """
     return (node, other_node) if node <= other_node else (other_node, node)
+
+
+def get_direction(coordinate: Coordinates, other: Coordinates) -> Move:
+    """
+    Return the move direction to get from coordinate to other
+    Args:
+        coordinate: coordinate we're starting from
+        other: coordinate to get to
+
+    Returns:
+        The move type to get from coordinate to other
+    """
+    if other == coordinate:
+        return Move.DID_NOT_MOVE
+    elif other == up(coordinate):
+        return Move.UP
+    elif other == left(coordinate):
+        return Move.LEFT
+    elif other == down(coordinate):
+        return Move.DOWN
+    elif other == right(coordinate):
+        return Move.RIGHT
+    else:
+        raise ValueError(f"Coordinates {coordinate} and {other} are not adjacent")
