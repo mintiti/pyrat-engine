@@ -1,6 +1,6 @@
 from typing import List, Tuple
 
-from pyrat_engine.types import Coordinates, Move
+from pyrat_engine.types import Coordinates, Move, Muds, Wall, Walls
 
 
 def central_symmetrical(
@@ -125,3 +125,26 @@ def get_direction(coordinate: Coordinates, other: Coordinates) -> Move:
         return Move.RIGHT
     else:
         raise ValueError(f"Coordinates {coordinate} and {other} are not adjacent")
+
+
+def add_wall(walls: Walls, wall: Wall) -> None:
+    if wall[0] not in walls:
+        walls[wall[0]] = []
+    if wall[1] not in walls:
+        walls[wall[1]] = []
+    if wall[1] not in walls[wall[0]]:
+        walls[wall[0]].append(wall[1])
+    if wall[0] not in walls[wall[1]]:
+        walls[wall[1]].append(wall[0])
+
+
+def add_mud(muds: Muds, coordinate: Coordinates, other: Coordinates, value):
+    # Make sure the dicts exist in mud
+    if coordinate not in muds:
+        muds[coordinate] = {}
+    if other not in muds:
+        muds[other] = {}
+
+    # Add the value to the dict
+    muds[coordinate][other] = value
+    muds[other][coordinate] = value
