@@ -2,6 +2,7 @@ from typing import List
 
 import numpy as np
 import numpy.typing as npt
+from dataclasses import dataclass
 
 from pyrat_engine.types import Coordinates, Move, Muds, Walls
 from pyrat_engine.utils import get_direction
@@ -70,6 +71,9 @@ class Board:
         # Can't move left from leftmost column
         can_move[0, :, Move.LEFT] = False
 
+        # Can't move with a null move
+        can_move[:, :, Move.DID_NOT_MOVE] = False
+
         return can_move
 
     def _init_walls(self, walls: Walls) -> None:
@@ -97,3 +101,16 @@ class Board:
     def _init_cheeses(self, cheeses: List[Coordinates]) -> None:
         for cheese in cheeses:
             self.cheeses[cheese] = True
+
+
+@dataclass
+class GameData:
+    player_scores: npt.NDArray[float]
+    player_muds: npt.NDArray[int]
+    player_misses: npt.NDArray[int]
+
+
+@dataclass
+class NumpyState:
+    board: Board
+    game_data: GameData

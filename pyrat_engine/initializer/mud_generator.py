@@ -5,7 +5,12 @@ from itertools import product
 
 from pyrat_engine.initializer.configs import MazeConfig, MudMode
 from pyrat_engine.types import Coordinates, Mud
-from pyrat_engine.utils import central_symmetrical, order_node_pair, valid_neighbors
+from pyrat_engine.utils import (
+    add_mud,
+    central_symmetrical,
+    order_node_pair,
+    valid_neighbors,
+)
 
 
 def _is_wall_present(
@@ -66,7 +71,7 @@ class MudGenerator:
             if order_node_pair(node, other_node) in visited_muds:
                 continue
             value = self._get_mud_value(maze_config.mud_range)
-            self._add_mud(muds, node, other_node, value)
+            add_mud(muds, node, other_node, value)
             visited_muds.add(order_node_pair(node, other_node))
             number_of_muds += 1
 
@@ -79,7 +84,7 @@ class MudGenerator:
             symmetric_1 = central_symmetrical(
                 mud[1], maze_config.width, maze_config.height
             )
-            self._add_mud(muds, symmetric_0, symmetric_1, value)
+            add_mud(muds, symmetric_0, symmetric_1, value)
             visited_muds.add(order_node_pair(symmetric_0, symmetric_1))
             number_of_muds += 1
         return muds
@@ -103,7 +108,7 @@ class MudGenerator:
             if number_of_muds / len(possible_muds) > maze_config.mud_density:
                 break
             value = self._get_mud_value(maze_config.mud_range)
-            self._add_mud(muds, mud[0], mud[1], value)
+            add_mud(muds, mud[0], mud[1], value)
             number_of_muds += 1
         return muds
 
@@ -113,23 +118,6 @@ class MudGenerator:
             A random mud value in [2,self.mud_range]
         """
         return random.randint(2, mud_range)
-
-    def _add_mud(
-        self,
-        mud: Dict[Coordinates, Dict[Coordinates, int]],
-        coordinate: Coordinates,
-        neighbor: Coordinates,
-        value: int,
-    ) -> None:
-        # Make sure the dicts exist in mud
-        if coordinate not in mud:
-            mud[coordinate] = {}
-        if neighbor not in mud:
-            mud[neighbor] = {}
-
-        # Add the value to the dict
-        mud[coordinate][neighbor] = value
-        mud[neighbor][coordinate] = value
 
     def _possible_muds(
         self, maze_config: MazeConfig, walls: Dict[Coordinates, List[Coordinates]]
