@@ -8,7 +8,7 @@ from pyrat_engine.state.base import CurrentGameState
 
 
 @pytest.fixture
-def maze_2_2() -> CurrentGameState:
+def maze_3_2() -> CurrentGameState:
     """
     + ―― + ―― +
     | C  | S  |
