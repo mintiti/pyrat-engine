@@ -4,6 +4,7 @@ from typing import List, Tuple
 import copy
 
 from pyrat_engine.engines.base import PyratEngine
+from pyrat_engine.engines.numpy_vectorized.base import NumpyState
 from pyrat_engine.engines.numpy_vectorized.helpers import (
     current_game_state_from_state,
     state_from_current_state,
@@ -19,7 +20,7 @@ class NumpyEngine(PyratEngine):
         self._current_state = state_from_current_state(state)
 
     def reset(self) -> None:
-        self._current_state = copy.copy(self._original_state)
+        self._current_state = copy.deepcopy(self._original_state)
 
     def set_current_game_state(self, current_game_state: CurrentGameState) -> None:
         self._current_state = state_from_current_state(current_game_state)
@@ -39,3 +40,11 @@ class NumpyEngine(PyratEngine):
         self, p1_move: Move, p2_move: Move, cheeses: List[Coordinates] = None
     ) -> None:
         pass
+
+    @property
+    def state(self):
+        return self._current_state
+
+    @state.setter
+    def state(self, value: NumpyState):
+        self._current_state = value
