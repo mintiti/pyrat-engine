@@ -7,8 +7,8 @@ These are the implementations on the roadmap :
 
 | Language | Variant    | Implemented | Description                                                      |
 |----------|------------|-------------|------------------------------------------------------------------|
-| Python   | Naive      | :x:         | Simple reimplementation of the original code                     |
-| Python   | Vectorized | :x:         | Implementation in pure Jax to allow running on GPU/TPUs natively |
+| Python   | Naive      | :heavy_check_mark:         | Simple reimplementation of the original code                     |
+| Python   | Vectorized | :heavy_check_mark:         | Implementation in pure Jax to allow running on GPU/TPUs natively |
 | Python   | Jax        | :x:         | Implementation in pure Jax to allow running on GPU/TPUs natively |
 | CPP      | Naive      | :x:         | Simple reimplementation of the original code in cpp              |
 | CPP      | Vectorized | :x:         | Vectorized CPP implementation                                    |
