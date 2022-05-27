@@ -1,6 +1,6 @@
 from typing import List, Tuple
 
-from pyrat_engine.types import Coordinates
+from pyrat_engine.types import Coordinates, Move, Muds, Wall, Walls
 
 
 def central_symmetrical(
@@ -101,3 +101,50 @@ def order_node_pair(
     Orders the pair of node to have a consitent representation of pairs of coordinates
     """
     return (node, other_node) if node <= other_node else (other_node, node)
+
+
+def get_direction(coordinate: Coordinates, other: Coordinates) -> Move:
+    """
+    Return the move direction to get from coordinate to other
+    Args:
+        coordinate: coordinate we're starting from
+        other: coordinate to get to
+
+    Returns:
+        The move type to get from coordinate to other
+    """
+    if other == coordinate:
+        return Move.DID_NOT_MOVE
+    elif other == up(coordinate):
+        return Move.UP
+    elif other == left(coordinate):
+        return Move.LEFT
+    elif other == down(coordinate):
+        return Move.DOWN
+    elif other == right(coordinate):
+        return Move.RIGHT
+    else:
+        raise ValueError(f"Coordinates {coordinate} and {other} are not adjacent")
+
+
+def add_wall(walls: Walls, wall: Wall) -> None:
+    if wall[0] not in walls:
+        walls[wall[0]] = []
+    if wall[1] not in walls:
+        walls[wall[1]] = []
+    if wall[1] not in walls[wall[0]]:
+        walls[wall[0]].append(wall[1])
+    if wall[0] not in walls[wall[1]]:
+        walls[wall[1]].append(wall[0])
+
+
+def add_mud(muds: Muds, coordinate: Coordinates, other: Coordinates, value):
+    # Make sure the dicts exist in mud
+    if coordinate not in muds:
+        muds[coordinate] = {}
+    if other not in muds:
+        muds[other] = {}
+
+    # Add the value to the dict
+    muds[coordinate][other] = value
+    muds[other][coordinate] = value

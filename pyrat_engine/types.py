@@ -1,6 +1,6 @@
 from typing import Dict, List, Tuple
 
-from enum import Enum
+from enum import IntEnum
 
 Coordinates = Tuple[int, int]
 
@@ -12,7 +12,7 @@ Walls = Dict[Coordinates, List[Coordinates]]
 Muds = Dict[Coordinates, Dict[Coordinates, int]]
 
 
-class Move(Enum):
+class Move(IntEnum):
     UP = 0
     LEFT = 1
     DOWN = 2
