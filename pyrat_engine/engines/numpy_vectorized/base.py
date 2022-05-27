@@ -25,13 +25,12 @@ class Board:
         # 0 is rat
         # 1 is snake
         self.player_positions: npt.NDArray[bool] = np.zeros(
-            (2, maze_width, maze_height), dtype=bool
+            (maze_width, maze_height, 2), dtype=bool
         )
         self._init_player_positions(p1_pos, p2_pos)
 
-        # TODO : Should we add a batch dimension here ??
-        # Idk if that would be faster, need to test
-        # self.can_move[x][y][Move.UP] gets whether we can go up
+        # self.can_move[x][y][Move.UP][0] gets whether we can go up
+        # shape = (width, height, 5)
         self.can_move: npt.NDArray[bool] = self._create_labyrinth_boundaries()
         self._init_walls(walls)
 
@@ -49,8 +48,8 @@ class Board:
 
     def _init_player_positions(self, p1_pos: Coordinates, p2_pos: Coordinates) -> None:
         """Place the players at the provided positions"""
-        self.player_positions[0][p1_pos] = True
-        self.player_positions[1][p2_pos] = True
+        self.player_positions[p1_pos][0] = True
+        self.player_positions[p2_pos][1] = True
 
     def _create_labyrinth_boundaries(self) -> npt.NDArray[bool]:
         """

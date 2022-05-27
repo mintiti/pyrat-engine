@@ -94,7 +94,7 @@ def get_player_positions(board) -> npt.NDArray[int]:
     # Get the positions of the True values
     player_positions = board.player_positions.nonzero()
     # pack them into 3 dimensional coordinates
-    player_positions = np.stack(player_positions[1:]).T
+    player_positions = np.stack(player_positions[:2]).T
     return player_positions
 
 

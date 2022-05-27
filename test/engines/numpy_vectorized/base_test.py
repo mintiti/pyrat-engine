@@ -36,7 +36,7 @@ class TestBoard:
         # Rat (index 0) in position 0,0
         assert (player_positions[0] == [0, 0, 0]).all()
         # Snake (index 1) is in position 2,1
-        assert (player_positions[1] == [1, 2, 1]).all()
+        assert (player_positions[1] == [2, 1, 1]).all()
 
     def test_board__walls(self, board_3_2: NpBoard, maze_3_2: CurrentGameState) -> None:
         # walls :

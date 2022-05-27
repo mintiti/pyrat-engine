@@ -86,13 +86,13 @@ def test_compute_new_positions(maze_3_2: CurrentGameState):
     state = state_from_current_state(maze_3_2)
     new_positions = compute_new_positions(state, p1_move=Move.UP, p2_move=Move.DOWN)
     player_positions = new_positions.nonzero()
-    player_positions = np.stack(player_positions[1:]).T
+    player_positions = np.stack(player_positions[:2]).T
     assert (player_positions[0] == [0, 1]).all()
     assert (player_positions[1] == [2, 0]).all()
 
     new_positions = compute_new_positions(state, p1_move=Move.DOWN, p2_move=Move.LEFT)
     player_positions = new_positions.nonzero()
-    player_positions = np.stack(player_positions[1:]).T
+    player_positions = np.stack(player_positions[:2]).T
     assert (player_positions[0] == [0, 0]).all()
     assert (player_positions[1] == [1, 1]).all()
 
@@ -100,7 +100,7 @@ def test_compute_new_positions(maze_3_2: CurrentGameState):
         state, p1_move=Move.DID_NOT_MOVE, p2_move=Move.RIGHT
     )
     player_positions = new_positions.nonzero()
-    player_positions = np.stack(player_positions[1:]).T
+    player_positions = np.stack(player_positions[:2]).T
     assert (player_positions[0] == [0, 0]).all()
     assert (player_positions[1] == [2, 1]).all()
 
@@ -111,7 +111,7 @@ def test_get_misses(maze_3_2: CurrentGameState):
     def get_misses(
         player_positions: npt.NDArray[bool], new_positions: npt.NDArray[bool]
     ) -> npt.NDArray:
-        return (state.board.player_positions == new_positions).all(axis=(1, 2))
+        return (state.board.player_positions == new_positions).all(axis=(0, 1))
 
     player_misses = get_misses(
         state.board.player_positions, state.board.player_positions
