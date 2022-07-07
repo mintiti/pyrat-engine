@@ -1,7 +1,9 @@
 import numpy as np
 import numpy.typing as npt
 import pytest
+import random
 
+from pyrat_engine.engines.numpy_vectorized import NumpyEngine
 from pyrat_engine.engines.numpy_vectorized.helpers import state_from_current_state
 from pyrat_engine.engines.numpy_vectorized.logic import (
     calculate_new_muds,
@@ -14,6 +16,11 @@ from pyrat_engine.engines.numpy_vectorized.logic import (
 )
 from pyrat_engine.state.base import CurrentGameState
 from pyrat_engine.types import Move
+
+
+def is_fortran_contiguous(array: npt.NDArray) -> bool:
+    """Check that the array is in fortran order in memory"""
+    return array.flags.f_contiguous
 
 
 @pytest.fixture
@@ -89,12 +96,14 @@ def test_compute_new_positions(maze_3_2: CurrentGameState):
     player_positions = np.stack(player_positions[:2]).T
     assert (player_positions[0] == [0, 1]).all()
     assert (player_positions[1] == [2, 0]).all()
+    assert is_fortran_contiguous(new_positions)
 
     new_positions = compute_new_positions(state, p1_move=Move.DOWN, p2_move=Move.LEFT)
     player_positions = new_positions.nonzero()
     player_positions = np.stack(player_positions[:2]).T
     assert (player_positions[0] == [0, 0]).all()
     assert (player_positions[1] == [1, 1]).all()
+    assert is_fortran_contiguous(new_positions)
 
     new_positions = compute_new_positions(
         state, p1_move=Move.DID_NOT_MOVE, p2_move=Move.RIGHT
@@ -103,6 +112,7 @@ def test_compute_new_positions(maze_3_2: CurrentGameState):
     player_positions = np.stack(player_positions[:2]).T
     assert (player_positions[0] == [0, 0]).all()
     assert (player_positions[1] == [2, 1]).all()
+    assert is_fortran_contiguous(new_positions)
 
 
 def test_get_misses(maze_3_2: CurrentGameState):
@@ -216,3 +226,17 @@ def test_update_cheeses_and_scores(maze_2_2_mud: CurrentGameState):
     cheese_board = np.zeros((2, 2), dtype=bool)
     cheese_board[1, 0] = True
     assert (state.board.cheeses == cheese_board).all()
+
+
+def test_data_types(maze_2_2_mud: CurrentGameState):
+    engine = NumpyEngine(maze_2_2_mud)
+    move_list = list(Move)
+    for _ in range(200):
+        assert engine.state.board.player_positions.dtype == bool
+        assert engine.state.board.can_move.dtype == bool
+        assert engine.state.board.cost.dtype == np.uint8
+        assert engine.state.board.cheeses.dtype == bool
+
+        p1_move = random.choice(move_list)
+        p2_move = random.choice(move_list)
+        engine.move(p1_move, p2_move)

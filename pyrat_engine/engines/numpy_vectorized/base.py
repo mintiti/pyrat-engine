@@ -24,8 +24,10 @@ class Board:
         # width x height array with a True where there is a player
         # 0 is rat
         # 1 is snake
+        # Array is in column major ('F') order because
+        # most operations on this array are along the last dimension
         self.player_positions: npt.NDArray[bool] = np.zeros(
-            (maze_width, maze_height, 2), dtype=bool
+            (maze_width, maze_height, 2), dtype=bool, order="F"
         )
         self._init_player_positions(p1_pos, p2_pos)
 
@@ -36,13 +38,15 @@ class Board:
 
         # self.cost[x][y][Move.UP] says how much turns it takes to go up
         self.cost: npt.NDArray[np.uint8] = np.ones(
-            (maze_width, maze_height, 5), dtype=np.uint8
+            (maze_width, maze_height, 5), dtype=np.uint8, order="F"
         )  # max mud = 256 on uint8
         self._init_muds(muds)
 
         # self.cheeses[x][y] says whether there is a cheese in (x,y)
+        # Order is set to column major order ('F') because
+        # Most operations are done along the last dimension
         self.cheeses: npt.NDArray[bool] = np.zeros(
-            (maze_width, maze_height), dtype=bool
+            (maze_width, maze_height), dtype=bool, order="F"
         )
         self._init_cheeses(cheeses)
 
@@ -57,7 +61,9 @@ class Board:
         Returns:
             a can_move Matrix
         """
-        can_move = np.ones((self.maze_width, self.maze_height, 5), dtype=bool)
+        can_move = np.ones(
+            (self.maze_width, self.maze_height, 5), dtype=bool, order="F"
+        )
         # Can't move up from upper row
         can_move[:, self.maze_height - 1, Move.UP] = False
 
