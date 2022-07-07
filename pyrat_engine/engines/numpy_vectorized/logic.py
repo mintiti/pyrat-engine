@@ -14,7 +14,17 @@ def move_up(player_position_matrix: npt.NDArray):
     Returns:
         the new board
     """
-    return np.roll(player_position_matrix, shift=1, axis=1)
+    player_position_matrix = np.copy(player_position_matrix)
+    player_position = np.argwhere(player_position_matrix)[0]
+    new_player_pos = (player_position + [0, 1]) % np.array(player_position_matrix.shape)
+    (
+        player_position_matrix[player_position[0], player_position[1]],
+        player_position_matrix[new_player_pos[0], new_player_pos[1]],
+    ) = (
+        player_position_matrix[new_player_pos[0], new_player_pos[1]],
+        player_position_matrix[player_position[0], player_position[1]],
+    )
+    return player_position_matrix
 
 
 def move_down(player_position_matrix: npt.NDArray):
@@ -26,7 +36,17 @@ def move_down(player_position_matrix: npt.NDArray):
     Returns:
         the new board
     """
-    return np.roll(player_position_matrix, shift=-1, axis=1)
+    player_position_matrix = np.copy(player_position_matrix)
+    player_position = np.argwhere(player_position_matrix)[0]
+    new_player_pos = (player_position - [0, 1]) % np.array(player_position_matrix.shape)
+    (
+        player_position_matrix[player_position[0], player_position[1]],
+        player_position_matrix[new_player_pos[0], new_player_pos[1]],
+    ) = (
+        player_position_matrix[new_player_pos[0], new_player_pos[1]],
+        player_position_matrix[player_position[0], player_position[1]],
+    )
+    return player_position_matrix
 
 
 def move_right(player_position_matrix: npt.NDArray):
@@ -38,7 +58,17 @@ def move_right(player_position_matrix: npt.NDArray):
     Returns:
         the new board
     """
-    return np.roll(player_position_matrix, shift=1, axis=0)
+    player_position_matrix = np.copy(player_position_matrix)
+    player_position = np.argwhere(player_position_matrix)[0]
+    new_player_pos = (player_position + [1, 0]) % np.array(player_position_matrix.shape)
+    (
+        player_position_matrix[player_position[0], player_position[1]],
+        player_position_matrix[new_player_pos[0], new_player_pos[1]],
+    ) = (
+        player_position_matrix[new_player_pos[0], new_player_pos[1]],
+        player_position_matrix[player_position[0], player_position[1]],
+    )
+    return player_position_matrix
 
 
 def move_left(player_position_matrix: npt.NDArray):
@@ -50,7 +80,17 @@ def move_left(player_position_matrix: npt.NDArray):
     Returns:
         the new board
     """
-    return np.roll(player_position_matrix, shift=-1, axis=0)
+    player_position_matrix = np.copy(player_position_matrix)
+    player_position = np.argwhere(player_position_matrix)[0]
+    new_player_pos = (player_position - [1, 0]) % np.array(player_position_matrix.shape)
+    (
+        player_position_matrix[player_position[0], player_position[1]],
+        player_position_matrix[new_player_pos[0], new_player_pos[1]],
+    ) = (
+        player_position_matrix[new_player_pos[0], new_player_pos[1]],
+        player_position_matrix[player_position[0], player_position[1]],
+    )
+    return player_position_matrix
 
 
 def move_player(player_position_matrix: npt.NDArray, player_move: Move):
@@ -129,7 +169,10 @@ def update_cheese_and_score(state: NumpyState):
     ).sum(axis=(0, 1))
 
     # (maze_width, maze_height)
-    new_cheeses = np.logical_xor(state.board.cheeses, taken_cheeses.sum(axis=2))
+    new_cheeses = np.logical_xor(
+        state.board.cheeses,
+        taken_cheeses.sum(axis=2),
+    )
 
     # update scores
     state.game_data.player_scores += points
@@ -177,7 +220,6 @@ def compute_new_positions(
     can_move[0] = state.board.can_move[state.board.player_positions[..., 0]][0][p1_move]
     can_move[1] = state.board.can_move[state.board.player_positions[..., 1]][0][p2_move]
     should_stay_in_place = is_stuck | np.logical_not(can_move)
-    # We use Transpose here because we want broadcasting from the left (player planes)
     # Numpy broadcasts from the right
     new_player_pos = (
         should_stay_in_place * state.board.player_positions
